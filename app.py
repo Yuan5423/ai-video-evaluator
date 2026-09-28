@@ -151,9 +151,3 @@ if run:
 if st.session_state.active_report is not None:
     render_report(st.session_state.active_report)
 
-
-                a=report.editing_advice
-                st.markdown(f'<div class="surface"><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">痛点</span><span class="arrow">→</span><span class="step">核心观点</span><span class="arrow">→</span><span class="step">案例</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="label">保留与删减</div><div class="copy"><b>开头：</b>{a.keep_opening}<br><b>中间：</b>{a.keep_middle}<br><b>删除：</b>{a.remove}<br><b>结尾：</b>{a.keep_ending}<br><b>建议时长：</b>{a.suggested_duration}</div></div>',unsafe_allow_html=True)
-                st.header("标题建议")
-                for col,kind,text in zip(st.columns(3),["痛点型","反常识型","结果型"],[report.titles.pain_point,report.titles.counterintuitive,report.titles.result]):
-                    with col: st.markdown(f'<div class="titlecard"><div class="titlekind">{kind}</div><div class="titletext">{text}</div></div>',unsafe_allow_html=True)
