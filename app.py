@@ -1,5 +1,7 @@
 import html
 import io
+import re
+import textwrap
 from datetime import datetime
 
 import streamlit as st
@@ -20,6 +22,8 @@ if "transcript_input" not in st.session_state:
     st.session_state.transcript_input = ""
 if "active_report" not in st.session_state:
     st.session_state.active_report = None
+if "active_image" not in st.session_state:
+    st.session_state.active_image = None
 
 def file_to_text(uploaded_file):
     if uploaded_file.name.lower().endswith(".docx"):
@@ -42,6 +46,40 @@ def file_to_text(uploaded_file):
         return uploaded_file.getvalue().decode("utf-8-sig").strip()
     except UnicodeDecodeError:
         return uploaded_file.getvalue().decode("gb18030").strip()
+
+def format_highlighted_excerpt(text):
+    """Safely render model-marked **key sentences** as bold text."""
+    escaped = html.escape(text)
+    return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
+
+def make_report_image(report):
+    """Create a portable PNG summary for download and history preview."""
+    from PIL import Image, ImageDraw, ImageFont
+    font_candidates = [
+        "C:/Windows/Fonts/msyh.ttc", "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    font_path = next((path for path in font_candidates if __import__("os").path.exists(path)), None)
+    regular = ImageFont.truetype(font_path, 34) if font_path else ImageFont.load_default()
+    small = ImageFont.truetype(font_path, 27) if font_path else ImageFont.load_default()
+    title = ImageFont.truetype(font_path, 46) if font_path else ImageFont.load_default()
+    lines = ["AI短视频口播评估报告", "", f"综合评分：{report.overall_score:.1f} / 10", f"素材判断：{'值得剪辑' if report.worth_editing else '暂不建议剪辑'}", f"预计可剪条数：{report.suggested_video_count}", "", "总体评价：", report.overall_summary, "", "最佳开头：", report.best_hook, "", "爆款候选："]
+    for index, candidate in enumerate(report.candidates, 1):
+        lines.extend([f"TOP {index}｜{candidate.viral_score:.1f} / 10", f"核心观点：{candidate.core_viewpoint}", f"推荐开头：{candidate.recommended_hook}", f"为什么值得剪：{candidate.reason}", f"原文：{candidate.original_excerpt}", f"剪辑结构：{candidate.editing_structure}", ""])
+    advice = report.editing_advice
+    lines.extend(["剪辑方案：", f"开头：{advice.keep_opening}", f"中间：{advice.keep_middle}", f"删除：{advice.remove}", f"结尾：{advice.keep_ending}", f"建议时长：{advice.suggested_duration}", "", "标题建议：", f"痛点型：{report.titles.pain_point}", f"反常识型：{report.titles.counterintuitive}", f"结果型：{report.titles.result}"])
+    wrapped = []
+    for line in lines:
+        wrapped.extend(textwrap.wrap(line, width=30, break_long_words=False) or [""])
+    image = Image.new("RGB", (1440, max(900, 140 + len(wrapped) * 56)), "white")
+    draw = ImageDraw.Draw(image)
+    y = 60
+    for index, line in enumerate(wrapped):
+        draw.text((76, y), line, fill="#182230", font=title if index == 0 else (regular if index in (2, 3, 4) else small))
+        y += 72 if index == 0 else 56
+    output = io.BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
 
 def render_report(report):
     st.markdown('<div class="eyebrow" style="margin-top:36px">EVALUATION REPORT</div>', unsafe_allow_html=True)
@@ -70,7 +108,7 @@ def render_report(report):
     if not report.candidates:
         st.markdown('<div class="empty">暂未发现达到合格标准的独立高价值片段。建议补充具体方法、案例或可执行步骤。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
-        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">TOP {index}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.viral_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">推荐开头</div><div class="copy">{html.escape(candidate.recommended_hook)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">原文对应内容</div><div class="copy">{html.escape(candidate.original_excerpt)}</div><div class="label">剪辑结构</div><div class="copy">{html.escape(candidate.editing_structure)}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">TOP {index}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.viral_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">推荐开头</div><div class="copy">{html.escape(candidate.recommended_hook)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">原文对应内容</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">剪辑结构</div><div class="copy">{html.escape(candidate.editing_structure)}</div></div>', unsafe_allow_html=True)
 
     st.header("剪辑方案")
     advice = report.editing_advice
@@ -79,6 +117,11 @@ def render_report(report):
     for col, kind, title in zip(st.columns(3), ["痛点型", "反常识型", "结果型"], [report.titles.pain_point, report.titles.counterintuitive, report.titles.result]):
         with col:
             st.markdown(f'<div class="titlecard"><div class="titlekind">{kind}</div><div class="titletext">{html.escape(title)}</div></div>', unsafe_allow_html=True)
+    image_bytes = st.session_state.get("active_image")
+    if image_bytes:
+        st.header("保存分析截图")
+        st.download_button("下载分析截图（PNG）", data=image_bytes, file_name="ai-video-evaluation-report.png", mime="image/png", use_container_width=False)
+        st.image(image_bytes, caption="当前分析报告截图预览", use_container_width=True)
 
 st.markdown('<div class="eyebrow">AI CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
 st.title("AI短视频口播评估助手")
@@ -89,19 +132,30 @@ with st.expander(f"历史评估记录（{len(st.session_state.history)}）", exp
     if not st.session_state.history:
         st.write("还没有历史记录。完成一次评估后会自动保存在这里。")
     else:
-        for index, item in enumerate(reversed(st.session_state.history), 1):
+        history_indices = list(range(len(st.session_state.history) - 1, -1, -1))
+        selected_index = st.selectbox("选择历史记录", history_indices, format_func=lambda i: f"{st.session_state.history[i]['created_at']} · {st.session_state.history[i]['score']:.1f}/10 · {st.session_state.history[i]['transcript'].replace(chr(10), ' ')[:36]}", key="selected_history_index")
+        selected_item = st.session_state.history[selected_index]
+        if st.button("查看选中的历史记录", key="view_selected_history", type="secondary"):
+            st.session_state.transcript_input = selected_item["transcript"]
+            st.session_state.active_report = selected_item["report"]
+            st.session_state.active_image = selected_item.get("image")
+            st.rerun()
+        for index in history_indices:
+            item = st.session_state.history[index]
             title = item["transcript"].replace("\n", " ").strip()[:42] or "未命名口播"
             left, right = st.columns([5, 1])
             with left:
                 st.markdown(f"**{title}…**  \\n{item['created_at']} · {item['score']:.1f}/10")
             with right:
-                if st.button("查看", key=f"history_{len(st.session_state.history) - index}"):
+                if st.button("查看", key=f"history_{index}"):
                     st.session_state.transcript_input = item["transcript"]
                     st.session_state.active_report = item["report"]
+                    st.session_state.active_image = item.get("image")
                     st.rerun()
         if st.button("清空本次历史", key="clear_history"):
             st.session_state.history = []
             st.session_state.active_report = None
+            st.session_state.active_image = None
             st.rerun()
 
 with st.container(border=True):
@@ -136,15 +190,19 @@ if run:
         with st.spinner("正在完整阅读并寻找高价值片段…"):
             try:
                 report = evaluate_script(transcript)
-            except Exception:
-                st.error("评估暂时失败，请稍后重试；如果问题持续，请检查服务器端 API 配置。")
+            except Exception as exc:
+                st.error(f"评估失败（{type(exc).__name__}）：{exc}")
+                st.caption("配置检测、网络、模型限流或模型返回格式都可能导致失败；上方信息可用于准确定位。")
             else:
                 st.session_state.active_report = report
+                report_image = make_report_image(report)
+                st.session_state.active_image = report_image
                 st.session_state.history.append({
                     "transcript": transcript,
                     "report": report,
                     "score": report.overall_score,
                     "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                    "image": report_image,
                 })
                 st.success("评估完成，结果已保存到本次历史记录。")
 
