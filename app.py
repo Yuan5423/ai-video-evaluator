@@ -207,6 +207,6 @@ if run:
                 st.success("评估完成，结果已保存到本次历史记录。")
 
 if st.session_state.active_report is not None:
-    render_report(st.session_state.active_report)更新 app.py
+    render_report(st.session_state.active_report)
     
 
