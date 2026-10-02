@@ -127,3 +127,4 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         return report
     except Exception as exc:
         raise RuntimeError("模型返回格式不符合评估报告结构。") from exc
+        
