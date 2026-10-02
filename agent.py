@@ -100,18 +100,23 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         report = EvaluationReport.model_validate(json.loads(content))
         verified_candidates = []
         source_spans = []
-        for candidate in report.candidates:
-            match = source_quote_span(candidate.original_excerpt, transcript)
-            if match is None:
-                continue
-            excerpt, start, end = match
-            candidate.original_excerpt = highlight_key_sentence(excerpt)
+        for candidate in report.candidates[:1]:
             plan = candidate.editing_plan
-            plan.opening_excerpt = exact_source_quote(plan.opening_excerpt, transcript) or excerpt
-            plan.core_excerpt = exact_source_quote(plan.core_excerpt, transcript) or excerpt
-            plan.ending_excerpt = exact_source_quote(plan.ending_excerpt, transcript) or excerpt
+            verified_sentences = []
+            candidate_spans = []
+            for sentence in plan.ordered_sentences:
+                match = source_quote_span(sentence, transcript)
+                if match is None:
+                    continue
+                excerpt, start, end = match
+                verified_sentences.append(excerpt)
+                candidate_spans.append((start, end))
+            if len(verified_sentences) < 2:
+                continue
+            plan.ordered_sentences = verified_sentences
+            candidate.original_excerpt = highlight_key_sentence("\n".join(verified_sentences))
             verified_candidates.append(candidate)
-            source_spans.append((start, end))
+            source_spans.extend(candidate_spans)
         report.candidates = verified_candidates
         report.suggested_video_count = len(verified_candidates)
         if not verified_candidates:
@@ -127,4 +132,3 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         return report
     except Exception as exc:
         raise RuntimeError("模型返回格式不符合评估报告结构。") from exc
-        
