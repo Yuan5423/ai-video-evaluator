@@ -38,6 +38,44 @@ def exact_source_quote(quote: str, transcript: str) -> Optional[str]:
     end = start + len(compact_quote) - 1
     return transcript[positions[start]:positions[end] + 1]
 
+def source_quote_span(quote: str, transcript: str) -> Optional[tuple[str, int, int]]:
+    """Locate an exact quote and retain its original character range."""
+    quote = quote.replace("**", "")
+    compact_quote = "".join(quote.split())
+    compact_source = "".join(transcript.split())
+    if not compact_quote:
+        return None
+    start = compact_source.find(compact_quote)
+    if start < 0:
+        return None
+    positions = [index for index, char in enumerate(transcript) if not char.isspace()]
+    end = start + len(compact_quote) - 1
+    return transcript[positions[start]:positions[end] + 1], positions[start], positions[end] + 1
+
+def calculate_clip_rate(transcript: str, spans: list[tuple[int, int]]) -> float:
+    total = sum(1 for char in transcript if not char.isspace())
+    if not total or not spans:
+        return 0.0
+    merged = []
+    for start, end in sorted(spans):
+        if not merged or start > merged[-1][1]:
+            merged.append([start, end])
+        else:
+            merged[-1][1] = max(merged[-1][1], end)
+    useful = sum(sum(1 for char in transcript[start:end] if not char.isspace()) for start, end in merged)
+    return round(useful / total * 100, 1)
+
+def fallback_opening_sentence(transcript: str) -> str:
+    """Return an exact spoken sentence only when the model's quote cannot be verified."""
+    spoken_lines = [
+        line.strip()
+        for line in transcript.splitlines()
+        if line.strip() and not re.fullmatch(r"(?:发言人|speaker)?\s*\d{1,2}:\d{2}(?::\d{2})?", line.strip(), re.I)
+    ]
+    source = "\n".join(spoken_lines) or transcript.strip()
+    sentences = [item.strip() for item in re.split(r"(?<=[。！？!?])", source) if item.strip()]
+    return max(sentences or [source], key=len)
+
 def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> EvaluationReport:
     if not transcript.strip():
         raise ValueError("请输入口播转写稿。")
@@ -61,20 +99,31 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
     try:
         report = EvaluationReport.model_validate(json.loads(content))
         verified_candidates = []
+        source_spans = []
         for candidate in report.candidates:
-            excerpt = exact_source_quote(candidate.original_excerpt, transcript)
-            if excerpt is None:
+            match = source_quote_span(candidate.original_excerpt, transcript)
+            if match is None:
                 continue
+            excerpt, start, end = match
             candidate.original_excerpt = highlight_key_sentence(excerpt)
-            candidate.recommended_hook = exact_source_quote(candidate.recommended_hook, transcript) or excerpt
+            plan = candidate.editing_plan
+            plan.opening_excerpt = exact_source_quote(plan.opening_excerpt, transcript) or excerpt
+            plan.core_excerpt = exact_source_quote(plan.core_excerpt, transcript) or excerpt
+            plan.ending_excerpt = exact_source_quote(plan.ending_excerpt, transcript) or excerpt
             verified_candidates.append(candidate)
+            source_spans.append((start, end))
         report.candidates = verified_candidates
-        report.suggested_video_count = min(report.suggested_video_count, len(verified_candidates))
+        report.suggested_video_count = len(verified_candidates)
         if not verified_candidates:
             report.worth_editing = False
-        report.best_hook = exact_source_quote(report.best_hook, transcript) or (
-            verified_candidates[0].recommended_hook if verified_candidates else ""
-        )
+            report.clip_value_level = "无明显剪辑价值"
+        report.effective_clip_rate = calculate_clip_rate(transcript, source_spans)
+        opening = exact_source_quote(report.best_opening.original_sentence, transcript)
+        if opening:
+            report.best_opening.original_sentence = opening
+        else:
+            report.best_opening.original_sentence = fallback_opening_sentence(transcript)
+            report.best_opening.reason = "原稿中未找到模型选择的完全匹配句子，已展示原文中相对完整的一句供人工判断。"
         return report
     except Exception as exc:
         raise RuntimeError("模型返回格式不符合评估报告结构。") from exc
