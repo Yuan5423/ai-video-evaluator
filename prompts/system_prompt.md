@@ -31,6 +31,7 @@
 - `clip_value_level` 必须结合传播潜力、可形成成片的完整度和用户价值判断，不能只按总分机械决定。
 - `candidates` 最多 1 条，只输出最值得剪成成片的一条；若没有，输出空数组。
 - `candidate.editing_plan.ordered_sentences` 是最终成片的**句子顺序**：列出 2–6 句完整原文句子。每一个数组元素都必须是原稿中的连续、逐字原话；数组顺序可以不同于原稿顺序。优先形成“强开头 → 观点 / 证据 → 结论”的观看路径。
+- `core_viewpoint` 仅用于内部归纳；前端会以 `ordered_sentences` 的第一句原文作为显著标题。不要把 `core_viewpoint` 当作可直接剪进视频的新句子。
 - `structure_reason` 只解释这套原文句子重排为何能让成片更有传播力；不得加入镜头、转场、字幕、B-roll 或音效建议。
 - `original_excerpt` 只作展示，内容必须与 `ordered_sentences` 里选取的原文一致；可将最值得强调的一到三句用 `**` 包裹，仅用于前端加粗显示，不能改变任何文字。
 - `effective_clip_rate` 先估算即可；程序会依据最终通过逐句原文校验的剪辑方案重新计算。
