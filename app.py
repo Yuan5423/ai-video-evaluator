@@ -63,15 +63,17 @@ def make_report_image(report):
     regular = ImageFont.truetype(font_path, 34) if font_path else ImageFont.load_default()
     small = ImageFont.truetype(font_path, 27) if font_path else ImageFont.load_default()
     title = ImageFont.truetype(font_path, 46) if font_path else ImageFont.load_default()
-    lines = ["AI短视频口播评估报告", "", f"综合评分：{report.overall_score:.1f} / 10", f"素材判断：{'值得剪辑' if report.worth_editing else '暂不建议剪辑'}", f"预计可剪条数：{report.suggested_video_count}", "", "总体评价：", report.overall_summary, "", "最佳开头：", report.best_hook, "", "爆款候选："]
+    lines = ["AI口播剪辑价值评估报告", "", f"剪辑价值：{report.clip_value_level}", f"综合评分：{report.overall_score:.1f} / 10", f"有效可剪率：{report.effective_clip_rate:.1f}%", f"预计可剪条数：{report.suggested_video_count}", "", "总体结论：", report.overall_summary]
+    lines.extend(["", "推荐开头（原文）：", report.best_opening.original_sentence, f"原文范围：{report.best_opening.source_range}", f"理由：{report.best_opening.reason}"])
+    lines.extend(["", "可剪片段："])
     for index, candidate in enumerate(report.candidates, 1):
-        lines.extend([f"TOP {index}｜{candidate.viral_score:.1f} / 10", f"核心观点：{candidate.core_viewpoint}", f"推荐开头：{candidate.recommended_hook}", f"为什么值得剪：{candidate.reason}", f"原文：{candidate.original_excerpt}", f"剪辑结构：{candidate.editing_structure}", ""])
-    advice = report.editing_advice
-    lines.extend(["剪辑方案：", f"开头：{advice.keep_opening}", f"中间：{advice.keep_middle}", f"删除：{advice.remove}", f"结尾：{advice.keep_ending}", f"建议时长：{advice.suggested_duration}", "", "标题建议：", f"痛点型：{report.titles.pain_point}", f"反常识型：{report.titles.counterintuitive}", f"结果型：{report.titles.result}"])
+        plan = candidate.editing_plan
+        lines.extend([f"TOP {index}｜{candidate.clip_value_score:.1f} / 10", f"原文范围：{candidate.source_range}", f"核心观点：{candidate.core_viewpoint}", f"为什么值得剪：{candidate.reason}", f"独立完整度：{candidate.independence}", f"价值类型：{'、'.join(candidate.value_types)}", f"预计时长：{candidate.suggested_duration}", f"原文：{candidate.original_excerpt}", "剪辑方案（原文顺序）：", f"开头：{plan.opening_excerpt}", f"核心：{plan.core_excerpt}", f"结尾：{plan.ending_excerpt}", f"结构说明：{plan.structure_reason}", ""])
     wrapped = []
     for line in lines:
-        wrapped.extend(textwrap.wrap(line, width=30, break_long_words=False) or [""])
-    image = Image.new("RGB", (1440, max(900, 140 + len(wrapped) * 56)), "white")
+        # Chinese transcripts often contain no spaces; force wrapping to avoid clipping text horizontally.
+        wrapped.extend(textwrap.wrap(line, width=30, break_long_words=True, break_on_hyphens=False) or [""])
+    image = Image.new("RGB", (1440, max(1000, 220 + len(wrapped) * 56)), "white")
     draw = ImageDraw.Draw(image)
     y = 60
     for index, line in enumerate(wrapped):
@@ -90,33 +92,35 @@ def render_report(report):
     with c1:
         st.markdown(f'<div class="card score"><div class="metric-label">综合评分</div><div class="metric">{report.overall_score:.1f}<span style="font-size:1rem;color:#8d96a4"> / 10</span></div><div class="metric-note">{"达到剪辑标准" if report.overall_score >= 8 else "尚未达到剪辑标准"}</div></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="card"><div class="metric-label">素材判断</div><div class="metric" style="font-size:1.35rem">{"高潜力素材" if report.worth_editing else "暂不建议剪辑"}</div><div class="metric-note">整体内容价值判断</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="card"><div class="metric-label">剪辑价值结论</div><div class="metric" style="font-size:1.35rem">{html.escape(report.clip_value_level)}</div><div class="metric-note">结合片段完整度与用户价值判断</div></div>', unsafe_allow_html=True)
     with c3:
-        st.markdown(f'<div class="card"><div class="metric-label">预计可剪条数</div><div class="metric">{report.suggested_video_count}</div><div class="metric-note">基于独立高价值观点</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="card"><div class="metric-label">有效可剪率</div><div class="metric">{report.effective_clip_rate:.1f}<span style="font-size:1rem;color:#8d96a4">%</span></div><div class="metric-note">预计可产出 {report.suggested_video_count} 条有效短视频</div></div>', unsafe_allow_html=True)
 
     st.header("五维评分")
-    if report.candidates:
-        scores = report.candidates[0].scores
-        dimensions = [("观点冲击力", scores.viewpoint_impact), ("用户痛点", scores.user_pain_or_benefit), ("小白理解度", scores.beginner_clarity), ("可传播性", scores.editability), ("情绪记忆点", scores.emotion_memory)]
-        for col, (name, value) in zip(st.columns(5), dimensions):
-            with col:
-                st.markdown(f'<div class="card"><div class="metric-label">{name}</div><div class="metric" style="font-size:1.35rem">{value}<span style="font-size:.85rem;color:#a0a8b5"> / 2</span></div><div style="height:5px;background:#edf0f5;border-radius:4px;margin-top:12px"><div style="width:{value * 50}%;height:5px;background:linear-gradient(90deg,#635bff,#5c9bff);border-radius:4px"></div></div></div>', unsafe_allow_html=True)
+    scores = report.overall_scores
+    dimensions = [("强观点价值", scores.strong_viewpoint), ("信息增量", scores.information_gain), ("冲突 / 反差", scores.contrast_value), ("独立成段", scores.standalone_segment), ("用户 / 传播价值", scores.user_propagation_value)]
+    for col, (name, value) in zip(st.columns(5), dimensions):
+        with col:
+            st.markdown(f'<div class="card"><div class="metric-label">{name}</div><div class="metric" style="font-size:1.35rem">{value}<span style="font-size:.85rem;color:#a0a8b5"> / 2</span></div><div style="height:5px;background:#edf0f5;border-radius:4px;margin-top:12px"><div style="width:{value * 50}%;height:5px;background:linear-gradient(90deg,#635bff,#5c9bff);border-radius:4px"></div></div></div>', unsafe_allow_html=True)
 
     st.header("推荐开头")
-    st.markdown(f'<div class="hook"><div class="quote">“</div><div class="hooktext">{html.escape(report.best_hook)}</div></div>', unsafe_allow_html=True)
-    st.header("爆款候选")
+    opening = report.best_opening
+    st.markdown(f'<div class="hook"><div class="quote">“</div><div class="hooktext">{html.escape(opening.original_sentence)}</div><div class="label">原文范围</div><div class="copy">{html.escape(opening.source_range)}</div><div class="label">为什么适合前置</div><div class="copy">{html.escape(opening.reason)}</div></div>', unsafe_allow_html=True)
+
+    st.header("值得剪的片段")
     if not report.candidates:
-        st.markdown('<div class="empty">暂未发现达到合格标准的独立高价值片段。建议补充具体方法、案例或可执行步骤。</div>', unsafe_allow_html=True)
+        st.markdown('<div class="empty">暂无明显值得单独剪出的片段。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
-        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">TOP {index}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.viral_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">推荐开头</div><div class="copy">{html.escape(candidate.recommended_hook)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">原文对应内容</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">剪辑结构</div><div class="copy">{html.escape(candidate.editing_structure)}</div></div>', unsafe_allow_html=True)
+        plan = candidate.editing_plan
+        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">片段 {index} · {html.escape(candidate.source_range)}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.clip_value_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">原文对应内容</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">独立完整度 / 主要价值 / 预计时长</div><div class="copy">{candidate.independence} · {html.escape('、'.join(candidate.value_types))} · {html.escape(candidate.suggested_duration)}</div><div class="label">剪辑方案（原文顺序）</div><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">核心说明</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="copy"><b>开头：</b>{html.escape(plan.opening_excerpt)}<br><b>核心：</b>{html.escape(plan.core_excerpt)}<br><b>结尾：</b>{html.escape(plan.ending_excerpt)}<br><b>结构说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
 
     st.header("剪辑方案")
-    advice = report.editing_advice
-    st.markdown(f'<div class="surface"><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">痛点</span><span class="arrow">→</span><span class="step">核心观点</span><span class="arrow">→</span><span class="step">案例</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="label">保留与删减</div><div class="copy"><b>开头：</b>{html.escape(advice.keep_opening)}<br><b>中间：</b>{html.escape(advice.keep_middle)}<br><b>删除：</b>{html.escape(advice.remove)}<br><b>结尾：</b>{html.escape(advice.keep_ending)}<br><b>建议时长：</b>{html.escape(advice.suggested_duration)}</div></div>', unsafe_allow_html=True)
-    st.header("标题建议")
-    for col, kind, title in zip(st.columns(3), ["痛点型", "反常识型", "结果型"], [report.titles.pain_point, report.titles.counterintuitive, report.titles.result]):
-        with col:
-            st.markdown(f'<div class="titlecard"><div class="titlekind">{kind}</div><div class="titletext">{html.escape(title)}</div></div>', unsafe_allow_html=True)
+    if not report.candidates:
+        st.markdown('<div class="empty">暂无可形成完整剪辑方案的独立片段。</div>', unsafe_allow_html=True)
+    for index, candidate in enumerate(report.candidates, 1):
+        plan = candidate.editing_plan
+        st.markdown(f'<div class="surface"><div class="rank">片段 {index} · {html.escape(candidate.core_viewpoint)}</div><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">核心说明</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="copy"><b>开头：</b>{html.escape(plan.opening_excerpt)}<br><b>核心：</b>{html.escape(plan.core_excerpt)}<br><b>结尾：</b>{html.escape(plan.ending_excerpt)}<br><b>结构说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
+
     image_bytes = st.session_state.get("active_image")
     if image_bytes:
         st.header("保存分析截图")
@@ -208,5 +212,4 @@ if run:
 
 if st.session_state.active_report is not None:
     render_report(st.session_state.active_report)
-    
 
