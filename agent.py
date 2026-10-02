@@ -187,6 +187,8 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
             if len(verified_sentences) < 2:
                 continue
             plan.ordered_sentences = verified_sentences
+            # The prominent UI title must also be usable source material, never an AI rewrite.
+            candidate.core_viewpoint = verified_sentences[0]
             candidate.original_excerpt = highlight_key_sentence("\n".join(verified_sentences))
             verified_candidates.append(candidate)
             source_spans.extend(candidate_spans)
