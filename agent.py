@@ -76,6 +76,79 @@ def fallback_opening_sentence(transcript: str) -> str:
     sentences = [item.strip() for item in re.split(r"(?<=[。！？!?])", source) if item.strip()]
     return max(sentences or [source], key=len)
 
+def normalise_report_payload(payload: dict) -> dict:
+    """Accept minor model-format variations before validating the report schema."""
+    def bounded_number(value, maximum, default=0):
+        try:
+            return max(0, min(maximum, float(value)))
+        except (TypeError, ValueError):
+            return default
+
+    score_source = payload.get("overall_scores") or payload.get("scores") or {}
+    legacy_score_names = {
+        "hook_strength": "strong_viewpoint",
+        "viewpoint_clarity": "information_gain",
+        "information_density": "contrast_value",
+        "emotional_tension": "standalone_segment",
+        "sharing_potential": "user_propagation_value",
+    }
+    payload["overall_scores"] = {
+        name: int(round(bounded_number(score_source.get(name, score_source.get(legacy_name)), 2)))
+        for name, legacy_name in legacy_score_names.items()
+    }
+    payload["overall_summary"] = str(payload.get("overall_summary") or "模型未提供总体结论。")
+    payload["overall_score"] = bounded_number(payload.get("overall_score"), 10)
+    payload["effective_clip_rate"] = bounded_number(payload.get("effective_clip_rate"), 100)
+    payload["worth_editing"] = bool(payload.get("worth_editing", False))
+    level = payload.get("clip_value_level")
+    allowed_levels = {"高剪辑价值", "中等剪辑价值", "低剪辑价值", "无明显剪辑价值"}
+    payload["clip_value_level"] = level if level in allowed_levels else "中等剪辑价值"
+
+    opening = payload.get("best_opening") or {}
+    payload["best_opening"] = {
+        "source_range": str(opening.get("source_range") or "全文原文"),
+        "original_sentence": str(opening.get("original_sentence") or ""),
+        "reason": str(opening.get("reason") or "从原文中选择相对更适合前置的一句。"),
+    }
+
+    raw_candidates = payload.get("candidates") or []
+    if not isinstance(raw_candidates, list):
+        raw_candidates = []
+    candidates = []
+    for raw_candidate in raw_candidates[:1]:
+        if not isinstance(raw_candidate, dict):
+            continue
+        plan = raw_candidate.get("editing_plan") or {}
+        ordered = plan.get("ordered_sentences") or []
+        if not isinstance(ordered, list):
+            ordered = []
+        # Compatibility with the earlier opening/core/ending response shape.
+        if not ordered:
+            ordered = [plan.get(key, "") for key in ("opening_excerpt", "core_excerpt", "ending_excerpt")]
+        ordered = [str(sentence).strip() for sentence in ordered if str(sentence).strip()]
+        if len(ordered) < 2:
+            continue
+        value_types = raw_candidate.get("value_types") or []
+        if isinstance(value_types, str):
+            value_types = [value_types]
+        candidates.append({
+            "source_range": str(raw_candidate.get("source_range") or "全文原文"),
+            "original_excerpt": str(raw_candidate.get("original_excerpt") or "\n".join(ordered)),
+            "core_viewpoint": str(raw_candidate.get("core_viewpoint") or "原文中的核心观点"),
+            "clip_value_score": bounded_number(raw_candidate.get("clip_value_score"), 10),
+            "reason": str(raw_candidate.get("reason") or "该组原文句子可组成一条完整表达。"),
+            "independence": raw_candidate.get("independence") if raw_candidate.get("independence") in {"高", "中", "低"} else "中",
+            "value_types": [str(item) for item in value_types[:3]],
+            "suggested_duration": str(raw_candidate.get("suggested_duration") or "30–60 秒"),
+            "editing_plan": {
+                "ordered_sentences": ordered[:6],
+                "structure_reason": str(plan.get("structure_reason") or "按以上原文句子顺序呈现核心观点。"),
+            },
+        })
+    payload["candidates"] = candidates
+    payload["suggested_video_count"] = len(candidates)
+    return payload
+
 def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> EvaluationReport:
     if not transcript.strip():
         raise ValueError("请输入口播转写稿。")
@@ -97,7 +170,7 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
     if not content:
         raise RuntimeError("模型没有返回可解析的评估结果。")
     try:
-        report = EvaluationReport.model_validate(json.loads(content))
+        report = EvaluationReport.model_validate(normalise_report_payload(json.loads(content)))
         verified_candidates = []
         source_spans = []
         for candidate in report.candidates[:1]:
@@ -131,4 +204,4 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
             report.best_opening.reason = "原稿中未找到模型选择的完全匹配句子，已展示原文中相对完整的一句供人工判断。"
         return report
     except Exception as exc:
-        raise RuntimeError("模型返回格式不符合评估报告结构。") from exc
+        raise RuntimeError("模型返回内容不完整，已无法自动转换为评估报告；请重新评估一次。") from exc
