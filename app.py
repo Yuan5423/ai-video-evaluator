@@ -68,7 +68,8 @@ def make_report_image(report):
     lines.extend(["", "可剪片段："])
     for index, candidate in enumerate(report.candidates, 1):
         plan = candidate.editing_plan
-        lines.extend([f"TOP {index}｜{candidate.clip_value_score:.1f} / 10", f"原文范围：{candidate.source_range}", f"核心观点：{candidate.core_viewpoint}", f"为什么值得剪：{candidate.reason}", f"独立完整度：{candidate.independence}", f"价值类型：{'、'.join(candidate.value_types)}", f"预计时长：{candidate.suggested_duration}", f"原文：{candidate.original_excerpt}", "剪辑方案（原文顺序）：", f"开头：{plan.opening_excerpt}", f"核心：{plan.core_excerpt}", f"结尾：{plan.ending_excerpt}", f"结构说明：{plan.structure_reason}", ""])
+        ordered_lines = [f"第 {step} 句：{sentence}" for step, sentence in enumerate(plan.ordered_sentences, 1)]
+        lines.extend([f"核心成片｜{candidate.clip_value_score:.1f} / 10", f"原文范围：{candidate.source_range}", f"核心观点：{candidate.core_viewpoint}", f"为什么值得剪：{candidate.reason}", f"独立完整度：{candidate.independence}", f"价值类型：{'、'.join(candidate.value_types)}", f"预计时长：{candidate.suggested_duration}", "剪辑方案（原文句子重排）：", *ordered_lines, f"重排说明：{plan.structure_reason}", ""])
     wrapped = []
     for line in lines:
         # Chinese transcripts often contain no spaces; force wrapping to avoid clipping text horizontally.
@@ -98,7 +99,7 @@ def render_report(report):
 
     st.header("五维评分")
     scores = report.overall_scores
-    dimensions = [("强观点价值", scores.strong_viewpoint), ("信息增量", scores.information_gain), ("冲突 / 反差", scores.contrast_value), ("独立成段", scores.standalone_segment), ("用户 / 传播价值", scores.user_propagation_value)]
+    dimensions = [("开头吸引力", scores.hook_strength), ("观点清晰度", scores.viewpoint_clarity), ("信息密度", scores.information_density), ("情绪 / 冲突", scores.emotional_tension), ("传播潜力", scores.sharing_potential)]
     for col, (name, value) in zip(st.columns(5), dimensions):
         with col:
             st.markdown(f'<div class="card"><div class="metric-label">{name}</div><div class="metric" style="font-size:1.35rem">{value}<span style="font-size:.85rem;color:#a0a8b5"> / 2</span></div><div style="height:5px;background:#edf0f5;border-radius:4px;margin-top:12px"><div style="width:{value * 50}%;height:5px;background:linear-gradient(90deg,#635bff,#5c9bff);border-radius:4px"></div></div></div>', unsafe_allow_html=True)
@@ -112,14 +113,18 @@ def render_report(report):
         st.markdown('<div class="empty">暂无明显值得单独剪出的片段。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
         plan = candidate.editing_plan
-        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">片段 {index} · {html.escape(candidate.source_range)}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.clip_value_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">原文对应内容</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">独立完整度 / 主要价值 / 预计时长</div><div class="copy">{candidate.independence} · {html.escape('、'.join(candidate.value_types))} · {html.escape(candidate.suggested_duration)}</div><div class="label">剪辑方案（原文顺序）</div><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">核心说明</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="copy"><b>开头：</b>{html.escape(plan.opening_excerpt)}<br><b>核心：</b>{html.escape(plan.core_excerpt)}<br><b>结尾：</b>{html.escape(plan.ending_excerpt)}<br><b>结构说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
+        ordered_steps = ''.join(f'<span class="step">第 {step} 句</span>{"<span class=\"arrow\">→</span>" if step < len(plan.ordered_sentences) else ""}' for step in range(1, len(plan.ordered_sentences) + 1))
+        ordered_text = '<br>'.join(f'<b>第 {step} 句：</b>{html.escape(sentence)}' for step, sentence in enumerate(plan.ordered_sentences, 1))
+        st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">核心成片 · {html.escape(candidate.source_range)}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.clip_value_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">使用的原文句子</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">完整度 / 主要价值 / 预计时长</div><div class="copy">{candidate.independence} · {html.escape('、'.join(candidate.value_types))} · {html.escape(candidate.suggested_duration)}</div><div class="label">剪辑方案（原文句子重排）</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
 
     st.header("剪辑方案")
     if not report.candidates:
         st.markdown('<div class="empty">暂无可形成完整剪辑方案的独立片段。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
         plan = candidate.editing_plan
-        st.markdown(f'<div class="surface"><div class="rank">片段 {index} · {html.escape(candidate.core_viewpoint)}</div><div class="flow"><span class="step">开头</span><span class="arrow">→</span><span class="step">核心说明</span><span class="arrow">→</span><span class="step">结尾</span></div><div class="copy"><b>开头：</b>{html.escape(plan.opening_excerpt)}<br><b>核心：</b>{html.escape(plan.core_excerpt)}<br><b>结尾：</b>{html.escape(plan.ending_excerpt)}<br><b>结构说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
+        ordered_steps = ''.join(f'<span class="step">第 {step} 句</span>{"<span class=\"arrow\">→</span>" if step < len(plan.ordered_sentences) else ""}' for step in range(1, len(plan.ordered_sentences) + 1))
+        ordered_text = '<br>'.join(f'<b>第 {step} 句：</b>{html.escape(sentence)}' for step, sentence in enumerate(plan.ordered_sentences, 1))
+        st.markdown(f'<div class="surface"><div class="rank">核心成片 · {html.escape(candidate.core_viewpoint)}</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
 
     image_bytes = st.session_state.get("active_image")
     if image_bytes:
