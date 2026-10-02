@@ -204,6 +204,10 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         else:
             report.best_opening.original_sentence = fallback_opening_sentence(transcript)
             report.best_opening.reason = "原稿中未找到模型选择的完全匹配句子，已展示原文中相对完整的一句供人工判断。"
+        if report.candidates:
+            # The recommendation and the actual edit must start from the same exact source sentence.
+            report.best_opening.original_sentence = report.candidates[0].editing_plan.ordered_sentences[0]
+            report.best_opening.source_range = report.candidates[0].source_range
         return report
     except Exception as exc:
         raise RuntimeError("模型返回内容不完整，已无法自动转换为评估报告；请重新评估一次。") from exc
