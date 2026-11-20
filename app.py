@@ -14,6 +14,8 @@ st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 .stApp{background:radial-gradient(circle at 8% 0,#edf0ff 0,transparent 31%),#f6f7fb;color:#182230;font-family:'DM Sans','Noto Sans SC',sans-serif}.block-container{max-width:1200px;padding:46px 34px 72px}h1{font-size:2.45rem!important;letter-spacing:-.055em}h2{font-size:1.24rem!important;margin:40px 0 5px;padding-left:12px;border-left:4px solid #635bff}.eyebrow{color:#635bff;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}.hero-subtitle{color:#69758a;font-size:1rem;margin-bottom:28px;max-width:680px}.surface,.card,.candidate,.titlecard,.operator-card,.clip-plan{background:rgba(255,255,255,.92);border:1px solid #e6e9f2;border-radius:18px;box-shadow:0 8px 30px rgba(24,34,48,.045)}.surface{padding:24px}.card{padding:22px 24px;height:100%}.candidate{padding:25px;margin:12px 0;border-left:4px solid #13a47a;background:linear-gradient(105deg,#f5fffb,#fff)}.titlecard{padding:17px 18px;min-height:105px;border-top:3px solid #ec8d32;background:linear-gradient(140deg,#fffaf4,#fff)}.operator-card{padding:19px 20px;min-height:132px;border-top:3px solid #665cff;background:linear-gradient(140deg,#f9f8ff,#fff)}.clip-plan{padding:24px;margin:12px 0;border-left:4px solid #3277e8;background:linear-gradient(105deg,#f4f9ff,#fff)}.label,.metric-label,.titlekind{color:#8791a0;font-size:.78rem;font-weight:700;margin:16px 0 6px;letter-spacing:.04em}.copy{color:#394455;line-height:1.7}.metric{color:#172033;font-size:2rem;font-weight:700;letter-spacing:-.04em}.metric-note{color:#637083;font-size:.82rem;margin-top:4px}.score{background:linear-gradient(135deg,#eeecff,#f0f7ff);border-color:#dfddff}.score .metric,.rank,.cscore{color:#574cff}.hook{padding:25px 28px;border-left:4px solid #f08a2b;background:linear-gradient(110deg,#fff8f0,#fff);border-radius:14px}.quote{color:#f08a2b;font-size:2rem;line-height:1}.hooktext{font-size:1.25rem;font-weight:700;line-height:1.65}.top{display:flex;justify-content:space-between;gap:16px}.rank{font-size:.76rem;font-weight:700;letter-spacing:.1em}.ctitle{font-size:1.15rem;font-weight:700;margin-top:5px}.cscore{font-size:1.35rem;font-weight:700}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.step{background:#eaf3ff;color:#2864bd;border-radius:999px;padding:9px 14px;font-size:.83rem;font-weight:600}.arrow{color:#6d9de3}.titletext{color:#263143;font-weight:600;line-height:1.5}.empty{padding:22px;background:#fafbfc;border:1px dashed #d9dee8;border-radius:14px;color:#7b8695}.section-tip{color:#7a8696;font-size:.88rem;margin:0 0 14px}.history-item{padding:14px 0;border-bottom:1px solid #edf0f4}div[data-testid="stTextArea"] textarea{background:#fff;border:1px solid #dfe4ef;border-radius:14px;min-height:300px;padding:18px;font-size:1rem;line-height:1.7}div[data-testid="stTextArea"] textarea:focus{border-color:#9c96ff;box-shadow:0 0 0 3px rgba(99,91,255,.12)}div[data-testid="stButton"] button{border:0;border-radius:13px;background:linear-gradient(105deg,#5549e8,#3977f6);color:#fff;font-weight:700;min-height:46px;box-shadow:0 8px 18px rgba(73,79,220,.2)}
 div[data-testid="stRadio"] label,div[data-testid="stRadio"] label span,div[data-testid="stRadio"] p{color:#263143!important;font-weight:600!important}
+/* Keep the original report layout; only make the six IP diagnosis cards easier to scan. */
+h2{margin:34px 0 14px!important;padding-left:0!important;border-left:0!important}.candidate{border-left:1px solid #e6e9f2!important;background:rgba(255,255,255,.92)!important}.titlecard{border-top:1px solid #e6e9f2!important;background:rgba(255,255,255,.92)!important}.hook{border-left:4px solid #635bff!important;background:linear-gradient(110deg,#fff,#f8f8ff)!important}.quote{color:#635bff!important}.step{background:#f0f1f8!important;color:#4b5666!important}.arrow{color:#a0a8b5!important}.clip-plan{padding:24px;border-left:1px solid #e6e9f2;background:rgba(255,255,255,.92)}.section-tip{display:none}.operator-card{border-top-width:3px}.operator-card.audience{border-top-color:#635bff;background:linear-gradient(140deg,#f7f6ff,#fff)}.operator-card.hook-card{border-top-color:#f08a2b;background:linear-gradient(140deg,#fff8ef,#fff)}.operator-card.conflict{border-top-color:#e34d75;background:linear-gradient(140deg,#fff4f7,#fff)}.operator-card.risk{border-top-color:#2d83d6;background:linear-gradient(140deg,#f2f8ff,#fff)}.operator-card.comment{border-top-color:#16a27b;background:linear-gradient(140deg,#f1fcf8,#fff)}.operator-card.positioning{border-top-color:#8b5bc7;background:linear-gradient(140deg,#faf5ff,#fff)}
 </style>""", unsafe_allow_html=True)
 
 if "history" not in st.session_state:
@@ -93,17 +95,17 @@ def render_report(report):
     st.markdown('<div class="section-tip">从目标用户、停留钩子、冲突与评论动机四个角度看内容潜力。</div>', unsafe_allow_html=True)
     diagnosis = report.traffic_diagnosis
     diagnosis_items = [
-        ("目标观众", diagnosis.target_audience),
-        ("流量钩子", diagnosis.traffic_hook),
-        ("核心冲突", diagnosis.core_conflict),
-        ("完播风险", diagnosis.retention_risk),
-        ("评论触发", diagnosis.comment_trigger),
-        ("IP 标签", diagnosis.ip_positioning),
+        ("目标观众", diagnosis.target_audience, "audience"),
+        ("流量钩子", diagnosis.traffic_hook, "hook-card"),
+        ("核心冲突", diagnosis.core_conflict, "conflict"),
+        ("完播风险", diagnosis.retention_risk, "risk"),
+        ("评论触发", diagnosis.comment_trigger, "comment"),
+        ("IP 标签", diagnosis.ip_positioning, "positioning"),
     ]
     for row in (diagnosis_items[:3], diagnosis_items[3:]):
-        for col, (label, value) in zip(st.columns(3), row):
+        for col, (label, value, card_class) in zip(st.columns(3), row):
             with col:
-                st.markdown(f'<div class="operator-card"><div class="metric-label">{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="operator-card {card_class}"><div class="metric-label">{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
     st.markdown(f'<div class="surface" style="margin-top:14px"><div class="metric-label">操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
     st.header("抖音发布标题建议")
     st.markdown('<div class="section-tip">标题用于发布页；视频中的口播内容仍只使用原文句子。</div>', unsafe_allow_html=True)
