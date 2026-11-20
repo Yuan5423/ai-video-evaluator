@@ -103,6 +103,23 @@ def normalise_report_payload(payload: dict) -> dict:
     level = payload.get("clip_value_level")
     allowed_levels = {"高剪辑价值", "中等剪辑价值", "低剪辑价值", "无明显剪辑价值"}
     payload["clip_value_level"] = level if level in allowed_levels else "中等剪辑价值"
+    diagnosis = payload.get("traffic_diagnosis") or {}
+    payload["traffic_diagnosis"] = {
+        "target_audience": str(diagnosis.get("target_audience") or "需要明确目标受众"),
+        "traffic_hook": str(diagnosis.get("traffic_hook") or "需要用原文中的强结论前置。"),
+        "core_conflict": str(diagnosis.get("core_conflict") or "当前冲突点不够集中。"),
+        "retention_risk": str(diagnosis.get("retention_risk") or "避免铺垫过长，尽快进入核心观点。"),
+        "comment_trigger": str(diagnosis.get("comment_trigger") or "用明确立场或可讨论的问题带动评论。"),
+        "ip_positioning": str(diagnosis.get("ip_positioning") or "暂未形成鲜明的 IP 观点标签。"),
+    }
+    raw_titles = payload.get("title_options") or []
+    if not isinstance(raw_titles, list):
+        raw_titles = []
+    payload["title_options"] = [
+        {"title": str(item.get("title") or ""), "angle": str(item.get("angle") or "")}
+        for item in raw_titles[:3] if isinstance(item, dict) and item.get("title")
+    ]
+    payload["operator_action"] = str(payload.get("operator_action") or "先强化开头结论，再保留能证明观点的案例和数据。")
 
     opening = payload.get("best_opening") or {}
     payload["best_opening"] = {
@@ -211,3 +228,4 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         return report
     except Exception as exc:
         raise RuntimeError("模型返回内容不完整，已无法自动转换为评估报告；请重新评估一次。") from exc
+

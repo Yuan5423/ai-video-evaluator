@@ -12,7 +12,7 @@ st.set_page_config(page_title="AI短视频口播评估助手", page_icon="🎬",
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
-.stApp{background:#f5f6f8;color:#182230;font-family:'DM Sans','Noto Sans SC',sans-serif}.block-container{max-width:1160px;padding:46px 34px 72px}h1{font-size:2.2rem!important;letter-spacing:-.04em}h2{font-size:1.2rem!important;margin:28px 0 12px}.eyebrow{color:#635bff;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}.hero-subtitle{color:#8993a3;font-size:1rem;margin-bottom:28px}.surface,.card,.candidate,.titlecard{background:#fff;border:1px solid #e8ebf1;border-radius:18px;box-shadow:0 8px 30px rgba(24,34,48,.045)}.surface{padding:24px}.card{padding:22px 24px;height:100%}.candidate{padding:25px;margin:12px 0}.titlecard{padding:17px 18px;min-height:105px}.label,.metric-label,.titlekind{color:#8791a0;font-size:.78rem;font-weight:600;margin:16px 0 6px}.copy{color:#394455;line-height:1.7}.metric{color:#172033;font-size:2rem;font-weight:700;letter-spacing:-.04em}.metric-note{color:#637083;font-size:.82rem;margin-top:4px}.score{background:linear-gradient(135deg,#f1efff,#f1f7ff);border-color:#dfddff}.score .metric,.rank,.cscore{color:#574cff}.hook{padding:25px 28px;border-left:4px solid #635bff;background:linear-gradient(110deg,#fff,#fafaff);border-radius:14px}.quote{color:#635bff;font-size:2rem;line-height:1}.hooktext{font-size:1.25rem;font-weight:600;line-height:1.65}.top{display:flex;justify-content:space-between;gap:16px}.rank{font-size:.76rem;font-weight:700;letter-spacing:.1em}.ctitle{font-size:1.15rem;font-weight:700;margin-top:5px}.cscore{font-size:1.35rem;font-weight:700}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.step{background:#f2f4f8;color:#4b5666;border-radius:999px;padding:9px 14px;font-size:.83rem;font-weight:600}.arrow{color:#a0a8b5}.titletext{color:#263143;font-weight:600;line-height:1.5}.empty{padding:22px;background:#fafbfc;border:1px dashed #d9dee8;border-radius:14px;color:#7b8695}.history-item{padding:14px 0;border-bottom:1px solid #edf0f4}div[data-testid="stTextArea"] textarea{background:#fff;border:1px solid #e0e4eb;border-radius:14px;min-height:300px;padding:18px;font-size:1rem;line-height:1.7}div[data-testid="stTextArea"] textarea:focus{border-color:#9c96ff;box-shadow:0 0 0 3px rgba(99,91,255,.12)}div[data-testid="stButton"] button{border:0;border-radius:13px;background:linear-gradient(105deg,#5549e8,#3977f6);color:#fff;font-weight:700;min-height:46px;box-shadow:0 8px 18px rgba(73,79,220,.2)}
+.stApp{background:radial-gradient(circle at 8% 0,#edf0ff 0,transparent 31%),#f6f7fb;color:#182230;font-family:'DM Sans','Noto Sans SC',sans-serif}.block-container{max-width:1200px;padding:46px 34px 72px}h1{font-size:2.45rem!important;letter-spacing:-.055em}h2{font-size:1.24rem!important;margin:34px 0 14px}.eyebrow{color:#635bff;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}.hero-subtitle{color:#69758a;font-size:1rem;margin-bottom:28px;max-width:680px}.surface,.card,.candidate,.titlecard,.operator-card{background:rgba(255,255,255,.92);border:1px solid #e6e9f2;border-radius:18px;box-shadow:0 8px 30px rgba(24,34,48,.045)}.surface{padding:24px}.card{padding:22px 24px;height:100%}.candidate{padding:25px;margin:12px 0}.titlecard{padding:17px 18px;min-height:105px}.operator-card{padding:19px 20px;min-height:132px;border-top:3px solid #665cff}.label,.metric-label,.titlekind{color:#8791a0;font-size:.78rem;font-weight:700;margin:16px 0 6px;letter-spacing:.04em}.copy{color:#394455;line-height:1.7}.metric{color:#172033;font-size:2rem;font-weight:700;letter-spacing:-.04em}.metric-note{color:#637083;font-size:.82rem;margin-top:4px}.score{background:linear-gradient(135deg,#eeecff,#f0f7ff);border-color:#dfddff}.score .metric,.rank,.cscore{color:#574cff}.hook{padding:25px 28px;border-left:4px solid #635bff;background:linear-gradient(110deg,#fff,#f8f8ff);border-radius:14px}.quote{color:#635bff;font-size:2rem;line-height:1}.hooktext{font-size:1.25rem;font-weight:700;line-height:1.65}.top{display:flex;justify-content:space-between;gap:16px}.rank{font-size:.76rem;font-weight:700;letter-spacing:.1em}.ctitle{font-size:1.15rem;font-weight:700;margin-top:5px}.cscore{font-size:1.35rem;font-weight:700}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.step{background:#f0f1f8;color:#4b5666;border-radius:999px;padding:9px 14px;font-size:.83rem;font-weight:600}.arrow{color:#a0a8b5}.titletext{color:#263143;font-weight:600;line-height:1.5}.empty{padding:22px;background:#fafbfc;border:1px dashed #d9dee8;border-radius:14px;color:#7b8695}.history-item{padding:14px 0;border-bottom:1px solid #edf0f4}div[data-testid="stTextArea"] textarea{background:#fff;border:1px solid #dfe4ef;border-radius:14px;min-height:300px;padding:18px;font-size:1rem;line-height:1.7}div[data-testid="stTextArea"] textarea:focus{border-color:#9c96ff;box-shadow:0 0 0 3px rgba(99,91,255,.12)}div[data-testid="stButton"] button{border:0;border-radius:13px;background:linear-gradient(105deg,#5549e8,#3977f6);color:#fff;font-weight:700;min-height:46px;box-shadow:0 8px 18px rgba(73,79,220,.2)}
 div[data-testid="stRadio"] label,div[data-testid="stRadio"] label span,div[data-testid="stRadio"] p{color:#263143!important;font-weight:600!important}
 </style>""", unsafe_allow_html=True)
 
@@ -88,6 +88,29 @@ def render_report(report):
     st.markdown('<div class="eyebrow" style="margin-top:36px">EVALUATION REPORT</div>', unsafe_allow_html=True)
     st.header("素材总评")
     st.markdown(f'<div class="surface"><div class="copy">{html.escape(report.overall_summary)}</div></div>', unsafe_allow_html=True)
+    st.header("IP 操盘诊断")
+    diagnosis = report.traffic_diagnosis
+    diagnosis_items = [
+        ("目标观众", diagnosis.target_audience),
+        ("流量钩子", diagnosis.traffic_hook),
+        ("核心冲突", diagnosis.core_conflict),
+        ("完播风险", diagnosis.retention_risk),
+        ("评论触发", diagnosis.comment_trigger),
+        ("IP 标签", diagnosis.ip_positioning),
+    ]
+    for row in (diagnosis_items[:3], diagnosis_items[3:]):
+        for col, (label, value) in zip(st.columns(3), row):
+            with col:
+                st.markdown(f'<div class="operator-card"><div class="metric-label">{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="surface" style="margin-top:14px"><div class="metric-label">操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
+    st.header("抖音发布标题建议")
+    st.caption("以下是发布标题，不属于视频原文；视频内口播仍严格使用原文句子。")
+    if report.title_options:
+        for col, option in zip(st.columns(len(report.title_options)), report.title_options):
+            with col:
+                st.markdown(f'<div class="titlecard"><div class="titlekind">{html.escape(option.angle)}</div><div class="titletext">{html.escape(option.title)}</div></div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="empty">本素材暂未形成可靠的发布标题建议。</div>', unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1.2, 1, 1])
     with c1:
@@ -132,9 +155,9 @@ def render_report(report):
         st.download_button("下载分析截图（PNG）", data=image_bytes, file_name="ai-video-evaluation-report.png", mime="image/png", use_container_width=False)
         st.image(image_bytes, caption="当前分析报告截图预览", use_container_width=True)
 
-st.markdown('<div class="eyebrow">AI CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
-st.title("AI短视频口播评估助手")
-st.markdown('<div class="hero-subtitle">从完整口播中识别真正值得剪辑的观点，让每一条内容都有清晰的传播理由。</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">DOUYIN IP OPERATOR · CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
+st.title("AI 口播 IP 操盘台")
+st.markdown('<div class="hero-subtitle">从抖音内容策略视角判断：谁会停留、为什么看完、什么值得剪成一条能沉淀 IP 的视频。</div>', unsafe_allow_html=True)
 
 with st.expander(f"历史评估记录（{len(st.session_state.history)}）", expanded=False):
     st.caption("记录仅保存在当前浏览器会话中；刷新浏览器、清除缓存或重新部署后会消失。")
@@ -217,4 +240,5 @@ if run:
 
 if st.session_state.active_report is not None:
     render_report(st.session_state.active_report)
+
 

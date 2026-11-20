@@ -29,6 +29,18 @@ class Candidate(BaseModel):
     suggested_duration: str
     editing_plan: ClipPlan
 
+class TrafficDiagnosis(BaseModel):
+    target_audience: str
+    traffic_hook: str
+    core_conflict: str
+    retention_risk: str
+    comment_trigger: str
+    ip_positioning: str
+
+class TitleOption(BaseModel):
+    title: str
+    angle: str
+
 class EvaluationReport(BaseModel):
     overall_summary: str
     worth_editing: bool
@@ -37,5 +49,9 @@ class EvaluationReport(BaseModel):
     overall_score: float = Field(ge=0, le=10)
     overall_scores: Scores
     effective_clip_rate: float = Field(ge=0, le=100)
+    traffic_diagnosis: TrafficDiagnosis
+    title_options: List[TitleOption] = Field(default_factory=list, max_length=3)
+    operator_action: str
     best_opening: OpeningRecommendation
     candidates: List[Candidate] = Field(default_factory=list, max_length=1)
+
