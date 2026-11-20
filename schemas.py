@@ -53,5 +53,5 @@ class EvaluationReport(BaseModel):
     title_options: List[TitleOption] = Field(default_factory=list, max_length=3)
     operator_action: str
     best_opening: OpeningRecommendation
-    candidates: List[Candidate] = Field(default_factory=list, max_length=1)
+    candidates: List[Candidate] = Field(default_factory=list, max_length=5)
 
