@@ -155,9 +155,9 @@ def render_report(report):
         st.download_button("下载分析截图（PNG）", data=image_bytes, file_name="ai-video-evaluation-report.png", mime="image/png", use_container_width=False)
         st.image(image_bytes, caption="当前分析报告截图预览", use_container_width=True)
 
-st.markdown('<div class="eyebrow">DOUYIN IP OPERATOR · CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
-st.title("AI 口播 IP 操盘台")
-st.markdown('<div class="hero-subtitle">从抖音内容策略视角判断：谁会停留、为什么看完、什么值得剪成一条能沉淀 IP 的视频。</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">AI VIDEO EVALUATOR · CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
+st.title("AI 口播评估助手")
+st.markdown('<div class="hero-subtitle">在原有口播评估基础上，补充抖音内容策略分析：谁会停留、为什么看完、什么值得剪成一条能沉淀 IP 的视频。</div>', unsafe_allow_html=True)
 
 with st.expander(f"历史评估记录（{len(st.session_state.history)}）", expanded=False):
     st.caption("记录仅保存在当前浏览器会话中；刷新浏览器、清除缓存或重新部署后会消失。")
