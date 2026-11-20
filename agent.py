@@ -132,7 +132,7 @@ def normalise_report_payload(payload: dict) -> dict:
     if not isinstance(raw_candidates, list):
         raw_candidates = []
     candidates = []
-    for raw_candidate in raw_candidates[:1]:
+    for raw_candidate in raw_candidates[:5]:
         if not isinstance(raw_candidate, dict):
             continue
         plan = raw_candidate.get("editing_plan") or {}
@@ -166,7 +166,12 @@ def normalise_report_payload(payload: dict) -> dict:
     payload["suggested_video_count"] = len(candidates)
     return payload
 
-def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> EvaluationReport:
+def evaluate_script(
+    transcript: str,
+    client: Optional[OpenAI] = None,
+    alternative_mode: bool = False,
+    excluded_sentences: Optional[list[str]] = None,
+) -> EvaluationReport:
     if not transcript.strip():
         raise ValueError("请输入口播转写稿。")
     if client is None:
@@ -175,12 +180,28 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
             raise RuntimeError("服务尚未配置 DEEPSEEK_API_KEY 或 OPENAI_API_KEY。")
         client = OpenAI(api_key=api_key, base_url=os.getenv("AI_BASE_URL", "https://api.deepseek.com"))
     schema = json.dumps(EvaluationReport.model_json_schema(), ensure_ascii=False)
-    system = PROMPT_PATH.read_text(encoding="utf-8") + "\n\n必须只输出 JSON，不要 Markdown。JSON 必须符合此 Schema：\n" + schema
+    system = PROMPT_PATH.read_text(encoding="utf-8")
+    if alternative_mode:
+        system += """
+
+## 再找备选片段模式
+
+用户已经有一个首选剪辑方案。现在请仅寻找最多 5 条新的备选方案：
+- 每条都必须能独立成片，宁可少于 5 条，也不要凑数。
+- 新方案不得使用下方“已选原文句子”中的任何一句；也不要复用同一观点的轻微改写。
+- `candidates` 可以输出 0–5 条；每条继续严格使用原文完整句子，且每条的 `best_opening` 必须等于该条 `editing_plan.ordered_sentences` 的第一句。
+- 此模式下，优先给不同角度、不同冲突或不同用户收益的内容，不要重复首选方案。
+"""
+    system += "\n\n必须只输出 JSON，不要 Markdown。JSON 必须符合此 Schema：\n" + schema
+    excluded_text = "\n".join(f"- {sentence}" for sentence in (excluded_sentences or [])) or "（无）"
+    user_request = "请完整阅读以下口播转写稿，再输出评估报告：\n\n" + transcript
+    if alternative_mode:
+        user_request += "\n\n已选原文句子（不得复用）：\n" + excluded_text
     response = client.chat.completions.create(
         model=os.getenv("AI_MODEL", os.getenv("OPENAI_MODEL", "deepseek-chat")), temperature=0.2,
         messages=[
             {"role": "system", "content": system},
-            {"role": "user", "content": "请完整阅读以下口播转写稿，再输出评估报告：\n\n" + transcript},
+            {"role": "user", "content": user_request},
         ], response_format={"type": "json_object"},
     )
     content = response.choices[0].message.content
@@ -190,7 +211,8 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         report = EvaluationReport.model_validate(normalise_report_payload(json.loads(content)))
         verified_candidates = []
         source_spans = []
-        for candidate in report.candidates[:1]:
+        excluded = {"".join(sentence.split()) for sentence in (excluded_sentences or [])}
+        for candidate in report.candidates[:5]:
             plan = candidate.editing_plan
             verified_sentences = []
             candidate_spans = []
@@ -202,6 +224,8 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
                 verified_sentences.append(excerpt)
                 candidate_spans.append((start, end))
             if len(verified_sentences) < 2:
+                continue
+            if alternative_mode and any("".join(sentence.split()) in excluded for sentence in verified_sentences):
                 continue
             plan.ordered_sentences = verified_sentences
             # The prominent UI title must also be usable source material, never an AI rewrite.
@@ -221,11 +245,26 @@ def evaluate_script(transcript: str, client: Optional[OpenAI] = None) -> Evaluat
         else:
             report.best_opening.original_sentence = fallback_opening_sentence(transcript)
             report.best_opening.reason = "原稿中未找到模型选择的完全匹配句子，已展示原文中相对完整的一句供人工判断。"
-        if report.candidates:
+        if report.candidates and not alternative_mode:
             # The recommendation and the actual edit must start from the same exact source sentence.
             report.best_opening.original_sentence = report.candidates[0].editing_plan.ordered_sentences[0]
             report.best_opening.source_range = report.candidates[0].source_range
         return report
     except Exception as exc:
         raise RuntimeError("模型返回内容不完整，已无法自动转换为评估报告；请重新评估一次。") from exc
+
+def find_alternative_clips(transcript: str, existing_candidates: list, client: Optional[OpenAI] = None) -> list:
+    """Find up to five non-overlapping, source-verified backup clip plans."""
+    excluded_sentences = [
+        sentence
+        for candidate in existing_candidates
+        for sentence in candidate.editing_plan.ordered_sentences
+    ]
+    report = evaluate_script(
+        transcript,
+        client=client,
+        alternative_mode=True,
+        excluded_sentences=excluded_sentences,
+    )
+    return report.candidates
 
