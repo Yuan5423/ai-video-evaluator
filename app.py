@@ -18,6 +18,8 @@ div[data-testid="stRadio"] label,div[data-testid="stRadio"] label span,div[data-
 h2{margin:34px 0 14px!important;padding-left:0!important;border-left:0!important}.candidate{border-left:1px solid #e6e9f2!important;background:rgba(255,255,255,.92)!important}.titlecard{border-top:1px solid #e6e9f2!important;background:rgba(255,255,255,.92)!important}.hook{border-left:4px solid #635bff!important;background:linear-gradient(110deg,#fff,#f8f8ff)!important}.quote{color:#635bff!important}.step{background:#f0f1f8!important;color:#4b5666!important}.arrow{color:#a0a8b5!important}.clip-plan{padding:24px;border-left:1px solid #e6e9f2;background:rgba(255,255,255,.92)}.section-tip{display:none}.operator-card{position:relative;overflow:hidden;padding:20px 20px 18px!important;min-height:146px!important;border:0!important;box-shadow:0 10px 24px rgba(36,49,73,.08)!important;transition:transform .18s ease}.operator-card:hover{transform:translateY(-3px)}.operator-card::after{content:"";position:absolute;width:72px;height:72px;right:-20px;top:-24px;border-radius:50%;background:rgba(255,255,255,.42)}.operator-card .metric-label{position:relative;z-index:1;display:inline-block;margin:0 0 12px!important;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.7);color:#354052!important}.operator-card .copy{position:relative;z-index:1;font-size:.94rem}.operator-icon{font-size:1.35rem;line-height:1;margin-right:7px;vertical-align:-2px}.operator-card.audience{background:linear-gradient(135deg,#e9e4ff,#f8f7ff)}.operator-card.hook-card{background:linear-gradient(135deg,#ffe8c8,#fff8ec)}.operator-card.conflict{background:linear-gradient(135deg,#ffdfe8,#fff5f8)}.operator-card.risk{background:linear-gradient(135deg,#dceeff,#f3f9ff)}.operator-card.comment{background:linear-gradient(135deg,#d9f7ec,#f1fcf8)}.operator-card.positioning{background:linear-gradient(135deg,#efe0ff,#faf5ff)}
 /* Dashboard visual system: the same light, colourful card language is used across the whole product. */
 .stApp{background:radial-gradient(circle at 5% 2%,#ded8ff 0,transparent 23%),radial-gradient(circle at 95% 14%,#d9f6ff 0,transparent 22%),linear-gradient(180deg,#f6f6ff 0%,#fbfcff 55%,#f7f9fd 100%)!important}.block-container{max-width:1240px!important}.eyebrow{display:inline-block;padding:6px 10px;border-radius:999px;background:#e8e5ff;color:#5549e8!important;letter-spacing:.1em}.hero-subtitle{padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 28px rgba(71,78,139,.07)}h1{margin-top:10px!important}.surface{border:0!important;box-shadow:0 12px 28px rgba(43,52,88,.08)!important;background:linear-gradient(135deg,#fff,#f9f9ff)!important}.card{border:0!important;box-shadow:0 10px 24px rgba(43,52,88,.07)!important;background:linear-gradient(145deg,#fff,#f7f8ff)!important}.score{background:linear-gradient(135deg,#ded8ff,#f4f2ff)!important}.titlecard{border:0!important;box-shadow:0 9px 22px rgba(43,52,88,.06)!important}.titlecard:nth-child(1){background:linear-gradient(135deg,#ffe5f2,#fff7fb)!important}.titlecard:nth-child(2){background:linear-gradient(135deg,#e3f5ff,#f7fcff)!important}.titlecard:nth-child(3){background:linear-gradient(135deg,#fff1cf,#fffaf0)!important}.hook{border:0!important;background:linear-gradient(135deg,#fff0d9,#fffaf2)!important;box-shadow:0 12px 28px rgba(152,103,43,.09)}.candidate{border:0!important;background:linear-gradient(135deg,#e6f7f0,#fbfffd)!important;box-shadow:0 12px 26px rgba(28,110,82,.08)!important}.clip-plan{border:0!important;background:linear-gradient(135deg,#e6f0ff,#fbfdff)!important;box-shadow:0 12px 26px rgba(41,99,175,.08)!important}.empty{border:0!important;background:linear-gradient(135deg,#f1efff,#fafaff)!important}.flow .step{background:#fff!important;box-shadow:0 4px 10px rgba(40,75,134,.09)}div[data-testid="stTextArea"] textarea{border:0!important;background:rgba(255,255,255,.9)!important;box-shadow:0 10px 26px rgba(43,52,88,.08)!important}div[data-testid="stFileUploader"]{padding:16px;border-radius:18px;background:linear-gradient(135deg,#f0edff,#fafaff);border:1px dashed #bcb5ff}details[data-testid="stExpander"]{border:0!important;border-radius:18px!important;background:rgba(255,255,255,.78)!important;box-shadow:0 9px 24px rgba(43,52,88,.06)}
+/* Varied bento-card geometry inspired by the supplied dashboard reference. */
+.surface{border-radius:28px 28px 12px 28px!important}.card{border-radius:24px!important}.score{border-radius:32px 16px 32px 16px!important}.titlecard{border-radius:28px 12px 28px 12px!important;min-height:124px!important}.titlecard:nth-child(1){background:linear-gradient(135deg,#ffd5ed,#ffecf7)!important}.titlecard:nth-child(2){background:linear-gradient(135deg,#c9f0ff,#eefaff)!important}.titlecard:nth-child(3){background:linear-gradient(135deg,#ffe7a9,#fff7db)!important}.hook{border-radius:34px 14px 34px 14px!important}.candidate{border-radius:30px 14px 30px 14px!important}.clip-plan{border-radius:14px 30px 14px 30px!important}.operator-card{min-height:158px!important;border-radius:30px 14px 30px 14px!important}.operator-card.lead-card{min-height:194px!important;border-radius:38px 18px 38px 18px!important;background:linear-gradient(135deg,#ffc4e2 0%,#ee78be 48%,#d853ad 100%)!important;color:#fff}.operator-card.lead-card .metric-label{background:rgba(255,255,255,.28);color:#fff!important}.operator-card.lead-card .copy{color:#fff!important;font-size:1rem}.operator-card.tall-card{min-height:194px!important;border-radius:18px 38px 18px 38px!important;background:linear-gradient(145deg,#b8edff,#70cdec 60%,#5bb3db)!important}.operator-card.compact-card{min-height:144px!important}.operator-card.tag-card{min-height:124px!important;border-radius:16px 30px 16px 30px!important}.operator-action{min-height:124px;padding:21px 24px;border-radius:30px 16px 30px 16px;background:linear-gradient(135deg,#fff2ae,#ffd36f);box-shadow:0 10px 24px rgba(185,132,28,.14)}.operator-action .metric-label{margin:0 0 10px!important;color:#705000!important}.operator-action .copy{font-size:.98rem;color:#604d25}.flow .step:nth-child(3n+1){background:#ffd9ed!important}.flow .step:nth-child(3n+2){background:#d7f4ff!important}.flow .step:nth-child(3n){background:#fff0bd!important}
 </style>""", unsafe_allow_html=True)
 
 if "history" not in st.session_state:
@@ -96,19 +98,27 @@ def render_report(report):
     st.header("IP 操盘诊断")
     st.markdown('<div class="section-tip">从目标用户、停留钩子、冲突与评论动机四个角度看内容潜力。</div>', unsafe_allow_html=True)
     diagnosis = report.traffic_diagnosis
-    diagnosis_items = [
-        ("目标观众", diagnosis.target_audience, "audience", "👥"),
-        ("流量钩子", diagnosis.traffic_hook, "hook-card", "⚡"),
+    def operator_card(label, value, card_class, icon, shape=""):
+        st.markdown(f'<div class="operator-card {card_class} {shape}"><div class="metric-label"><span class="operator-icon">{icon}</span>{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
+
+    # Bento-style arrangement: one lead insight, one tall hook card, then three compact action cards.
+    lead_col, hook_col = st.columns([1.45, 1])
+    with lead_col:
+        operator_card("目标观众", diagnosis.target_audience, "audience", "👥", "lead-card")
+    with hook_col:
+        operator_card("流量钩子", diagnosis.traffic_hook, "hook-card", "⚡", "tall-card")
+    for col, item in zip(st.columns([1.15, 1, .9]), [
         ("核心冲突", diagnosis.core_conflict, "conflict", "🔥"),
         ("完播风险", diagnosis.retention_risk, "risk", "⏱️"),
         ("评论触发", diagnosis.comment_trigger, "comment", "💬"),
-        ("IP 标签", diagnosis.ip_positioning, "positioning", "✦"),
-    ]
-    for row in (diagnosis_items[:3], diagnosis_items[3:]):
-        for col, (label, value, card_class, icon) in zip(st.columns(3), row):
-            with col:
-                st.markdown(f'<div class="operator-card {card_class}"><div class="metric-label"><span class="operator-icon">{icon}</span>{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="surface" style="margin-top:14px"><div class="metric-label">操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
+    ]):
+        with col:
+            operator_card(*item, "compact-card")
+    tag_col, action_col = st.columns([.85, 1.65])
+    with tag_col:
+        operator_card("IP 标签", diagnosis.ip_positioning, "positioning", "✦", "tag-card")
+    with action_col:
+        st.markdown(f'<div class="operator-action"><div class="metric-label">🧭 操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
     st.header("抖音发布标题建议")
     st.markdown('<div class="section-tip">标题用于发布页；视频中的口播内容仍只使用原文句子。</div>', unsafe_allow_html=True)
     st.caption("以下是发布标题，不属于视频原文；视频内口播仍严格使用原文句子。")
