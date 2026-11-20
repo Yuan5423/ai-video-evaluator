@@ -20,6 +20,8 @@ h2{margin:34px 0 14px!important;padding-left:0!important;border-left:0!important
 .stApp{background:radial-gradient(circle at 5% 2%,#ded8ff 0,transparent 23%),radial-gradient(circle at 95% 14%,#d9f6ff 0,transparent 22%),linear-gradient(180deg,#f6f6ff 0%,#fbfcff 55%,#f7f9fd 100%)!important}.block-container{max-width:1240px!important}.eyebrow{display:inline-block;padding:6px 10px;border-radius:999px;background:#e8e5ff;color:#5549e8!important;letter-spacing:.1em}.hero-subtitle{padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 28px rgba(71,78,139,.07)}h1{margin-top:10px!important}.surface{border:0!important;box-shadow:0 12px 28px rgba(43,52,88,.08)!important;background:linear-gradient(135deg,#fff,#f9f9ff)!important}.card{border:0!important;box-shadow:0 10px 24px rgba(43,52,88,.07)!important;background:linear-gradient(145deg,#fff,#f7f8ff)!important}.score{background:linear-gradient(135deg,#ded8ff,#f4f2ff)!important}.titlecard{border:0!important;box-shadow:0 9px 22px rgba(43,52,88,.06)!important}.titlecard:nth-child(1){background:linear-gradient(135deg,#ffe5f2,#fff7fb)!important}.titlecard:nth-child(2){background:linear-gradient(135deg,#e3f5ff,#f7fcff)!important}.titlecard:nth-child(3){background:linear-gradient(135deg,#fff1cf,#fffaf0)!important}.hook{border:0!important;background:linear-gradient(135deg,#fff0d9,#fffaf2)!important;box-shadow:0 12px 28px rgba(152,103,43,.09)}.candidate{border:0!important;background:linear-gradient(135deg,#e6f7f0,#fbfffd)!important;box-shadow:0 12px 26px rgba(28,110,82,.08)!important}.clip-plan{border:0!important;background:linear-gradient(135deg,#e6f0ff,#fbfdff)!important;box-shadow:0 12px 26px rgba(41,99,175,.08)!important}.empty{border:0!important;background:linear-gradient(135deg,#f1efff,#fafaff)!important}.flow .step{background:#fff!important;box-shadow:0 4px 10px rgba(40,75,134,.09)}div[data-testid="stTextArea"] textarea{border:0!important;background:rgba(255,255,255,.9)!important;box-shadow:0 10px 26px rgba(43,52,88,.08)!important}div[data-testid="stFileUploader"]{padding:16px;border-radius:18px;background:linear-gradient(135deg,#f0edff,#fafaff);border:1px dashed #bcb5ff}details[data-testid="stExpander"]{border:0!important;border-radius:18px!important;background:rgba(255,255,255,.78)!important;box-shadow:0 9px 24px rgba(43,52,88,.06)}
 /* Varied bento-card geometry inspired by the supplied dashboard reference. */
 .surface{border-radius:28px 28px 12px 28px!important}.card{border-radius:24px!important}.score{border-radius:32px 16px 32px 16px!important}.titlecard{border-radius:28px 12px 28px 12px!important;min-height:124px!important}.titlecard:nth-child(1){background:linear-gradient(135deg,#ffd5ed,#ffecf7)!important}.titlecard:nth-child(2){background:linear-gradient(135deg,#c9f0ff,#eefaff)!important}.titlecard:nth-child(3){background:linear-gradient(135deg,#ffe7a9,#fff7db)!important}.hook{border-radius:34px 14px 34px 14px!important}.candidate{border-radius:30px 14px 30px 14px!important}.clip-plan{border-radius:14px 30px 14px 30px!important}.operator-card{min-height:158px!important;border-radius:30px 14px 30px 14px!important}.operator-card.lead-card{min-height:194px!important;border-radius:38px 18px 38px 18px!important;background:linear-gradient(135deg,#ffc4e2 0%,#ee78be 48%,#d853ad 100%)!important;color:#fff}.operator-card.lead-card .metric-label{background:rgba(255,255,255,.28);color:#fff!important}.operator-card.lead-card .copy{color:#fff!important;font-size:1rem}.operator-card.tall-card{min-height:194px!important;border-radius:18px 38px 18px 38px!important;background:linear-gradient(145deg,#b8edff,#70cdec 60%,#5bb3db)!important}.operator-card.compact-card{min-height:144px!important}.operator-card.tag-card{min-height:124px!important;border-radius:16px 30px 16px 30px!important}.operator-action{min-height:124px;padding:21px 24px;border-radius:30px 16px 30px 16px;background:linear-gradient(135deg,#fff2ae,#ffd36f);box-shadow:0 10px 24px rgba(185,132,28,.14)}.operator-action .metric-label{margin:0 0 10px!important;color:#705000!important}.operator-action .copy{font-size:.98rem;color:#604d25}.flow .step:nth-child(3n+1){background:#ffd9ed!important}.flow .step:nth-child(3n+2){background:#d7f4ff!important}.flow .step:nth-child(3n){background:#fff0bd!important}
+/* Final design system: calm monochrome structure + the lime accent palette from the reference. */
+.stApp{background:linear-gradient(180deg,#edf4d8 0,#f6f7ef 38%,#f8f8f4 100%)!important;color:#111!important}.block-container{max-width:1180px!important;padding-top:28px!important}.product-hero{position:relative;overflow:hidden;padding:34px 38px 30px;margin:0 0 24px;border-radius:34px 34px 18px 34px;background:#111;color:#fff;box-shadow:0 18px 44px rgba(10,10,10,.18)}.product-hero::after{content:"";position:absolute;width:290px;height:290px;right:-80px;top:-120px;border-radius:50%;background:#b8d85e}.product-hero>*{position:relative;z-index:1}.product-hero h1{margin:12px 0 7px!important;color:#fff!important;font-size:2.65rem!important}.hero-kicker{display:inline-block;padding:5px 10px;border:1px solid rgba(255,255,255,.4);border-radius:999px;color:#d9ee99;font-size:.72rem;font-weight:700;letter-spacing:.1em}.hero-promise{font-size:1.45rem;font-weight:800;letter-spacing:-.03em}.product-hero p{max-width:700px;margin:10px 0 18px;color:#d5d5d5;line-height:1.7}.hero-steps{display:flex;gap:8px;flex-wrap:wrap}.hero-steps span{padding:8px 12px;border-radius:999px;background:#b8d85e;color:#111;font-size:.82rem;font-weight:800}.eyebrow,.hero-subtitle{display:none!important}h2{border:0!important;margin:34px 0 10px!important;padding:0!important;color:#111!important;font-size:1.4rem!important}.decision-hero{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:27px 30px;margin:22px 0 30px;border-radius:28px 28px 12px 28px;background:#111;color:#fff}.decision-hero h2{margin:7px 0!important;color:#cce87d!important;font-size:2rem!important}.decision-hero p{max-width:750px;margin:0;color:#eee;line-height:1.75}.decision-score{flex:0 0 140px;padding:17px;border-radius:19px;background:#b8d85e;color:#111;text-align:center}.decision-score span,.decision-score small{display:block;font-size:.76rem;font-weight:700}.decision-score strong{font-size:3rem;line-height:1;letter-spacing:-.08em}.operator-card{min-height:184px!important;margin:0 0 14px!important;padding:20px!important;border-radius:24px!important;box-shadow:none!important;transform:none!important}.operator-card:hover{transform:none!important}.operator-card::after{display:none}.operator-card .metric-label{padding:0!important;background:none!important;color:#111!important;font-size:.82rem!important}.operator-card .copy{color:#1c1c1c!important;line-height:1.7}.operator-card.audience{background:#dff3a5!important}.operator-card.hook-card{background:#b8d85e!important}.operator-card.conflict{background:#ffd778!important}.operator-card.risk{background:#cde8dc!important}.operator-card.comment{background:#efd7ee!important}.operator-card.positioning{background:#d5e6ff!important}.operator-action{margin:0 0 24px;min-height:0!important;border-radius:18px 18px 28px 18px!important;background:#111!important;color:#fff!important;box-shadow:none!important}.operator-action .metric-label{color:#cce87d!important}.operator-action .copy{color:#fff!important}.surface,.card,.candidate,.titlecard,.hook,.clip-plan{border:0!important;box-shadow:none!important}.surface{background:#fff!important;border-radius:22px!important}.card{background:#fff!important;border-radius:20px!important}.score{background:#b8d85e!important}.titlecard{background:#fff!important;border:2px solid #111!important;border-radius:22px!important}.titlecard:nth-child(1),.titlecard:nth-child(2),.titlecard:nth-child(3){background:#fff!important}.titlecard:nth-child(1){border-radius:28px 10px 28px 10px!important}.titlecard:nth-child(2){border-radius:10px 28px 10px 28px!important}.hook{background:#fff7db!important;border-radius:30px 14px 30px 14px!important}.candidate{background:#fff!important;border-left:8px solid #b8d85e!important;border-radius:22px!important}.clip-plan{background:#e7f2c2!important;border-radius:14px 28px 14px 28px!important}.flow .step,.flow .step:nth-child(3n+1),.flow .step:nth-child(3n+2),.flow .step:nth-child(3n){background:#111!important;color:#fff!important;box-shadow:none!important}.metric{color:#111!important}.rank,.cscore{color:#587516!important}.empty{background:#fff!important;border:2px dashed #b8d85e!important}div[data-testid="stTextArea"] textarea{background:#fff!important;border:2px solid #111!important;box-shadow:none!important;border-radius:22px!important}div[data-testid="stButton"] button{background:#111!important;border-radius:999px!important;box-shadow:none!important}div[data-testid="stFileUploader"]{background:#fff!important;border:2px dashed #8aa63d!important;border-radius:20px!important}details[data-testid="stExpander"]{background:#fff!important;border:1px solid #d8dfc3!important;box-shadow:none!important}
 </style>""", unsafe_allow_html=True)
 
 if "history" not in st.session_state:
@@ -91,34 +93,32 @@ def make_report_image(report):
     return output.getvalue()
 
 def render_report(report):
-    st.markdown('<div class="eyebrow" style="margin-top:36px">EVALUATION REPORT</div>', unsafe_allow_html=True)
-    st.header("素材总评")
-    st.markdown('<div class="section-tip">先判断这段素材整体值不值得投入剪辑时间。</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="surface"><div class="copy">{html.escape(report.overall_summary)}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'''<section class="decision-hero">
+      <div><div class="hero-kicker">素材剪辑结论</div><h2>{html.escape(report.clip_value_level)}</h2><p>{html.escape(report.overall_summary)}</p></div>
+      <div class="decision-score"><span>综合评分</span><strong>{report.overall_score:.1f}</strong><small>/ 10</small></div>
+    </section>''', unsafe_allow_html=True)
     st.header("IP 操盘诊断")
-    st.markdown('<div class="section-tip">从目标用户、停留钩子、冲突与评论动机四个角度看内容潜力。</div>', unsafe_allow_html=True)
+    st.caption("内容团队要先看这六项：谁会看、为什么停留、哪里会流失、如何形成讨论。")
     diagnosis = report.traffic_diagnosis
     def operator_card(label, value, card_class, icon, shape=""):
         st.markdown(f'<div class="operator-card {card_class} {shape}"><div class="metric-label"><span class="operator-icon">{icon}</span>{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
 
-    # Bento-style arrangement: one lead insight, one tall hook card, then three compact action cards.
-    lead_col, hook_col = st.columns([1.45, 1])
-    with lead_col:
-        operator_card("目标观众", diagnosis.target_audience, "audience", "👥", "lead-card")
-    with hook_col:
-        operator_card("流量钩子", diagnosis.traffic_hook, "hook-card", "⚡", "tall-card")
-    for col, item in zip(st.columns([1.15, 1, .9]), [
+    # Stable two-row grid: deliberate visual hierarchy without overlap at any screen width.
+    for col, item in zip(st.columns(3), [
+        ("目标观众", diagnosis.target_audience, "audience", "👥"),
+        ("流量钩子", diagnosis.traffic_hook, "hook-card", "⚡"),
         ("核心冲突", diagnosis.core_conflict, "conflict", "🔥"),
-        ("完播风险", diagnosis.retention_risk, "risk", "⏱️"),
-        ("评论触发", diagnosis.comment_trigger, "comment", "💬"),
     ]):
         with col:
-            operator_card(*item, "compact-card")
-    tag_col, action_col = st.columns([.85, 1.65])
-    with tag_col:
-        operator_card("IP 标签", diagnosis.ip_positioning, "positioning", "✦", "tag-card")
-    with action_col:
-        st.markdown(f'<div class="operator-action"><div class="metric-label">🧭 操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
+            operator_card(*item)
+    for col, item in zip(st.columns(3), [
+        ("完播风险", diagnosis.retention_risk, "risk", "⏱️"),
+        ("评论触发", diagnosis.comment_trigger, "comment", "💬"),
+        ("IP 标签", diagnosis.ip_positioning, "positioning", "✦"),
+    ]):
+        with col:
+            operator_card(*item)
+    st.markdown(f'<div class="operator-action"><div class="metric-label">🧭 操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
     st.header("抖音发布标题建议")
     st.markdown('<div class="section-tip">标题用于发布页；视频中的口播内容仍只使用原文句子。</div>', unsafe_allow_html=True)
     st.caption("以下是发布标题，不属于视频原文；视频内口播仍严格使用原文句子。")
@@ -176,9 +176,13 @@ def render_report(report):
         st.download_button("下载分析截图（PNG）", data=image_bytes, file_name="ai-video-evaluation-report.png", mime="image/png", use_container_width=False)
         st.image(image_bytes, caption="当前分析报告截图预览", use_container_width=True)
 
-st.markdown('<div class="eyebrow">AI VIDEO EVALUATOR · CONTENT INTELLIGENCE</div>', unsafe_allow_html=True)
-st.title("AI 口播评估助手")
-st.markdown('<div class="hero-subtitle">在原有口播评估基础上，补充抖音内容策略分析：谁会停留、为什么看完、什么值得剪成一条能沉淀 IP 的视频。</div>', unsafe_allow_html=True)
+st.markdown('''<section class="product-hero">
+  <div class="hero-kicker">AI VIDEO EVALUATOR / 01</div>
+  <h1>AI 口播评估助手</h1>
+  <div class="hero-promise">30 秒判断：这段口播，到底值不值得剪？</div>
+  <p>不先教你怎么剪，先从原文里找出能留住人、能独立成片、值得投入剪辑时间的内容。</p>
+  <div class="hero-steps"><span>01 投入口播</span><span>02 判断价值</span><span>03 找出可剪段落</span></div>
+</section>''', unsafe_allow_html=True)
 
 with st.expander(f"历史评估记录（{len(st.session_state.history)}）", expanded=False):
     st.caption("记录仅保存在当前浏览器会话中；刷新浏览器、清除缓存或重新部署后会消失。")
