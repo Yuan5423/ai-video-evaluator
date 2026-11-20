@@ -12,7 +12,7 @@ st.set_page_config(page_title="AI短视频口播评估助手", page_icon="🎬",
 
 st.markdown("""<style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
-.stApp{background:radial-gradient(circle at 8% 0,#edf0ff 0,transparent 31%),#f6f7fb;color:#182230;font-family:'DM Sans','Noto Sans SC',sans-serif}.block-container{max-width:1200px;padding:46px 34px 72px}h1{font-size:2.45rem!important;letter-spacing:-.055em}h2{font-size:1.24rem!important;margin:34px 0 14px}.eyebrow{color:#635bff;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}.hero-subtitle{color:#69758a;font-size:1rem;margin-bottom:28px;max-width:680px}.surface,.card,.candidate,.titlecard,.operator-card{background:rgba(255,255,255,.92);border:1px solid #e6e9f2;border-radius:18px;box-shadow:0 8px 30px rgba(24,34,48,.045)}.surface{padding:24px}.card{padding:22px 24px;height:100%}.candidate{padding:25px;margin:12px 0}.titlecard{padding:17px 18px;min-height:105px}.operator-card{padding:19px 20px;min-height:132px;border-top:3px solid #665cff}.label,.metric-label,.titlekind{color:#8791a0;font-size:.78rem;font-weight:700;margin:16px 0 6px;letter-spacing:.04em}.copy{color:#394455;line-height:1.7}.metric{color:#172033;font-size:2rem;font-weight:700;letter-spacing:-.04em}.metric-note{color:#637083;font-size:.82rem;margin-top:4px}.score{background:linear-gradient(135deg,#eeecff,#f0f7ff);border-color:#dfddff}.score .metric,.rank,.cscore{color:#574cff}.hook{padding:25px 28px;border-left:4px solid #635bff;background:linear-gradient(110deg,#fff,#f8f8ff);border-radius:14px}.quote{color:#635bff;font-size:2rem;line-height:1}.hooktext{font-size:1.25rem;font-weight:700;line-height:1.65}.top{display:flex;justify-content:space-between;gap:16px}.rank{font-size:.76rem;font-weight:700;letter-spacing:.1em}.ctitle{font-size:1.15rem;font-weight:700;margin-top:5px}.cscore{font-size:1.35rem;font-weight:700}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.step{background:#f0f1f8;color:#4b5666;border-radius:999px;padding:9px 14px;font-size:.83rem;font-weight:600}.arrow{color:#a0a8b5}.titletext{color:#263143;font-weight:600;line-height:1.5}.empty{padding:22px;background:#fafbfc;border:1px dashed #d9dee8;border-radius:14px;color:#7b8695}.history-item{padding:14px 0;border-bottom:1px solid #edf0f4}div[data-testid="stTextArea"] textarea{background:#fff;border:1px solid #dfe4ef;border-radius:14px;min-height:300px;padding:18px;font-size:1rem;line-height:1.7}div[data-testid="stTextArea"] textarea:focus{border-color:#9c96ff;box-shadow:0 0 0 3px rgba(99,91,255,.12)}div[data-testid="stButton"] button{border:0;border-radius:13px;background:linear-gradient(105deg,#5549e8,#3977f6);color:#fff;font-weight:700;min-height:46px;box-shadow:0 8px 18px rgba(73,79,220,.2)}
+.stApp{background:radial-gradient(circle at 8% 0,#edf0ff 0,transparent 31%),#f6f7fb;color:#182230;font-family:'DM Sans','Noto Sans SC',sans-serif}.block-container{max-width:1200px;padding:46px 34px 72px}h1{font-size:2.45rem!important;letter-spacing:-.055em}h2{font-size:1.24rem!important;margin:40px 0 5px;padding-left:12px;border-left:4px solid #635bff}.eyebrow{color:#635bff;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}.hero-subtitle{color:#69758a;font-size:1rem;margin-bottom:28px;max-width:680px}.surface,.card,.candidate,.titlecard,.operator-card,.clip-plan{background:rgba(255,255,255,.92);border:1px solid #e6e9f2;border-radius:18px;box-shadow:0 8px 30px rgba(24,34,48,.045)}.surface{padding:24px}.card{padding:22px 24px;height:100%}.candidate{padding:25px;margin:12px 0;border-left:4px solid #13a47a;background:linear-gradient(105deg,#f5fffb,#fff)}.titlecard{padding:17px 18px;min-height:105px;border-top:3px solid #ec8d32;background:linear-gradient(140deg,#fffaf4,#fff)}.operator-card{padding:19px 20px;min-height:132px;border-top:3px solid #665cff;background:linear-gradient(140deg,#f9f8ff,#fff)}.clip-plan{padding:24px;margin:12px 0;border-left:4px solid #3277e8;background:linear-gradient(105deg,#f4f9ff,#fff)}.label,.metric-label,.titlekind{color:#8791a0;font-size:.78rem;font-weight:700;margin:16px 0 6px;letter-spacing:.04em}.copy{color:#394455;line-height:1.7}.metric{color:#172033;font-size:2rem;font-weight:700;letter-spacing:-.04em}.metric-note{color:#637083;font-size:.82rem;margin-top:4px}.score{background:linear-gradient(135deg,#eeecff,#f0f7ff);border-color:#dfddff}.score .metric,.rank,.cscore{color:#574cff}.hook{padding:25px 28px;border-left:4px solid #f08a2b;background:linear-gradient(110deg,#fff8f0,#fff);border-radius:14px}.quote{color:#f08a2b;font-size:2rem;line-height:1}.hooktext{font-size:1.25rem;font-weight:700;line-height:1.65}.top{display:flex;justify-content:space-between;gap:16px}.rank{font-size:.76rem;font-weight:700;letter-spacing:.1em}.ctitle{font-size:1.15rem;font-weight:700;margin-top:5px}.cscore{font-size:1.35rem;font-weight:700}.flow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.step{background:#eaf3ff;color:#2864bd;border-radius:999px;padding:9px 14px;font-size:.83rem;font-weight:600}.arrow{color:#6d9de3}.titletext{color:#263143;font-weight:600;line-height:1.5}.empty{padding:22px;background:#fafbfc;border:1px dashed #d9dee8;border-radius:14px;color:#7b8695}.section-tip{color:#7a8696;font-size:.88rem;margin:0 0 14px}.history-item{padding:14px 0;border-bottom:1px solid #edf0f4}div[data-testid="stTextArea"] textarea{background:#fff;border:1px solid #dfe4ef;border-radius:14px;min-height:300px;padding:18px;font-size:1rem;line-height:1.7}div[data-testid="stTextArea"] textarea:focus{border-color:#9c96ff;box-shadow:0 0 0 3px rgba(99,91,255,.12)}div[data-testid="stButton"] button{border:0;border-radius:13px;background:linear-gradient(105deg,#5549e8,#3977f6);color:#fff;font-weight:700;min-height:46px;box-shadow:0 8px 18px rgba(73,79,220,.2)}
 div[data-testid="stRadio"] label,div[data-testid="stRadio"] label span,div[data-testid="stRadio"] p{color:#263143!important;font-weight:600!important}
 </style>""", unsafe_allow_html=True)
 
@@ -87,8 +87,10 @@ def make_report_image(report):
 def render_report(report):
     st.markdown('<div class="eyebrow" style="margin-top:36px">EVALUATION REPORT</div>', unsafe_allow_html=True)
     st.header("素材总评")
+    st.markdown('<div class="section-tip">先判断这段素材整体值不值得投入剪辑时间。</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="surface"><div class="copy">{html.escape(report.overall_summary)}</div></div>', unsafe_allow_html=True)
     st.header("IP 操盘诊断")
+    st.markdown('<div class="section-tip">从目标用户、停留钩子、冲突与评论动机四个角度看内容潜力。</div>', unsafe_allow_html=True)
     diagnosis = report.traffic_diagnosis
     diagnosis_items = [
         ("目标观众", diagnosis.target_audience),
@@ -104,6 +106,7 @@ def render_report(report):
                 st.markdown(f'<div class="operator-card"><div class="metric-label">{label}</div><div class="copy">{html.escape(value)}</div></div>', unsafe_allow_html=True)
     st.markdown(f'<div class="surface" style="margin-top:14px"><div class="metric-label">操盘下一步</div><div class="copy">{html.escape(report.operator_action)}</div></div>', unsafe_allow_html=True)
     st.header("抖音发布标题建议")
+    st.markdown('<div class="section-tip">标题用于发布页；视频中的口播内容仍只使用原文句子。</div>', unsafe_allow_html=True)
     st.caption("以下是发布标题，不属于视频原文；视频内口播仍严格使用原文句子。")
     if report.title_options:
         for col, option in zip(st.columns(len(report.title_options)), report.title_options):
@@ -121,6 +124,7 @@ def render_report(report):
         st.markdown(f'<div class="card"><div class="metric-label">有效可剪率</div><div class="metric">{report.effective_clip_rate:.1f}<span style="font-size:1rem;color:#8d96a4">%</span></div><div class="metric-note">预计可产出 {report.suggested_video_count} 条有效短视频</div></div>', unsafe_allow_html=True)
 
     st.header("五维评分")
+    st.markdown('<div class="section-tip">快速定位素材是卡在开头、观点、信息密度、情绪还是传播性。</div>', unsafe_allow_html=True)
     scores = report.overall_scores
     dimensions = [("开头吸引力", scores.hook_strength), ("观点清晰度", scores.viewpoint_clarity), ("信息密度", scores.information_density), ("情绪 / 冲突", scores.emotional_tension), ("传播潜力", scores.sharing_potential)]
     for col, (name, value) in zip(st.columns(5), dimensions):
@@ -128,10 +132,12 @@ def render_report(report):
             st.markdown(f'<div class="card"><div class="metric-label">{name}</div><div class="metric" style="font-size:1.35rem">{value}<span style="font-size:.85rem;color:#a0a8b5"> / 2</span></div><div style="height:5px;background:#edf0f5;border-radius:4px;margin-top:12px"><div style="width:{value * 50}%;height:5px;background:linear-gradient(90deg,#635bff,#5c9bff);border-radius:4px"></div></div></div>', unsafe_allow_html=True)
 
     st.header("推荐开头")
+    st.markdown('<div class="section-tip">从原文中挑选最能让用户停下来的句子，可前置但不改写。</div>', unsafe_allow_html=True)
     opening = report.best_opening
     st.markdown(f'<div class="hook"><div class="quote">“</div><div class="hooktext">{html.escape(opening.original_sentence)}</div><div class="label">原文范围</div><div class="copy">{html.escape(opening.source_range)}</div><div class="label">为什么适合前置</div><div class="copy">{html.escape(opening.reason)}</div></div>', unsafe_allow_html=True)
 
     st.header("值得剪的片段")
+    st.markdown('<div class="section-tip">绿色区块代表可独立成片的内容；先看观点，再看原文与理由。</div>', unsafe_allow_html=True)
     if not report.candidates:
         st.markdown('<div class="empty">暂无明显值得单独剪出的片段。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
@@ -141,13 +147,14 @@ def render_report(report):
         st.markdown(f'<div class="candidate"><div class="top"><div><div class="rank">核心成片 · {html.escape(candidate.source_range)}</div><div class="ctitle">{html.escape(candidate.core_viewpoint)}</div></div><div class="cscore">{candidate.clip_value_score:.1f}<span style="font-size:.8rem;color:#9aa3b0"> / 10</span></div></div><div class="label">使用的原文句子</div><div class="copy">{format_highlighted_excerpt(candidate.original_excerpt)}</div><div class="label">为什么值得剪</div><div class="copy">{html.escape(candidate.reason)}</div><div class="label">完整度 / 主要价值 / 预计时长</div><div class="copy">{candidate.independence} · {html.escape('、'.join(candidate.value_types))} · {html.escape(candidate.suggested_duration)}</div><div class="label">剪辑方案（原文句子重排）</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
 
     st.header("剪辑方案")
+    st.markdown('<div class="section-tip">蓝色区块展示原文句子的重排顺序，不新增、不改写口播内容。</div>', unsafe_allow_html=True)
     if not report.candidates:
         st.markdown('<div class="empty">暂无可形成完整剪辑方案的独立片段。</div>', unsafe_allow_html=True)
     for index, candidate in enumerate(report.candidates, 1):
         plan = candidate.editing_plan
         ordered_steps = ''.join(f'<span class="step">第 {step} 句</span>{"<span class=\"arrow\">→</span>" if step < len(plan.ordered_sentences) else ""}' for step in range(1, len(plan.ordered_sentences) + 1))
         ordered_text = '<br>'.join(f'<b>第 {step} 句：</b>{html.escape(sentence)}' for step, sentence in enumerate(plan.ordered_sentences, 1))
-        st.markdown(f'<div class="surface"><div class="rank">核心成片 · {html.escape(candidate.core_viewpoint)}</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="clip-plan"><div class="rank">核心成片 · {html.escape(candidate.core_viewpoint)}</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
 
     image_bytes = st.session_state.get("active_image")
     if image_bytes:
