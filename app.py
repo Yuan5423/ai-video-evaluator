@@ -6,7 +6,7 @@ from datetime import datetime
 
 import streamlit as st
 
-from agent import evaluate_script
+from agent import evaluate_script, find_alternative_clips
 
 st.set_page_config(page_title="AI短视频口播评估助手", page_icon="🎬", layout="wide")
 
@@ -161,6 +161,31 @@ def render_report(report):
         ordered_steps = ''.join(f'<span class="step">第 {step} 句</span>{"<span class=\"arrow\">→</span>" if step < len(plan.ordered_sentences) else ""}' for step in range(1, len(plan.ordered_sentences) + 1))
         ordered_text = '<br>'.join(f'<b>第 {step} 句：</b>{html.escape(sentence)}' for step, sentence in enumerate(plan.ordered_sentences, 1))
         st.markdown(f'<div class="clip-plan"><div class="rank">核心成片 · {html.escape(candidate.core_viewpoint)}</div><div class="flow">{ordered_steps}</div><div class="copy">{ordered_text}<br><b>重排说明：</b>{html.escape(plan.structure_reason)}</div></div>', unsafe_allow_html=True)
+
+    if report.candidates and len(report.candidates) < 5:
+        if st.button("再找其他片段（最多 5 个）", key="find_alternative_clips", type="secondary"):
+            transcript = st.session_state.transcript_input
+            with st.spinner("正在从未使用的原文中寻找其他独立成片方案…"):
+                try:
+                    alternatives = find_alternative_clips(transcript, report.candidates)
+                except Exception as exc:
+                    st.error(f"备选片段查找失败（{type(exc).__name__}）：{exc}")
+                else:
+                    existing_openings = {candidate.editing_plan.ordered_sentences[0] for candidate in report.candidates}
+                    unique_alternatives = [
+                        candidate for candidate in alternatives
+                        if candidate.editing_plan.ordered_sentences[0] not in existing_openings
+                    ]
+                    slots = 5 - len(report.candidates)
+                    if unique_alternatives:
+                        report.candidates.extend(unique_alternatives[:slots])
+                        report.suggested_video_count = len(report.candidates)
+                        st.session_state.active_report = report
+                        st.session_state.active_image = make_report_image(report)
+                        st.success(f"已新增 {min(len(unique_alternatives), slots)} 个备选剪辑方案。")
+                        st.rerun()
+                    else:
+                        st.info("原文中暂未找到符合要求、且不重复当前方案的其他独立片段。")
 
     image_bytes = st.session_state.get("active_image")
     if image_bytes:
